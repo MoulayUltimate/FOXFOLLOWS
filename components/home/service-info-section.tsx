@@ -8,6 +8,8 @@ import { Check, ChevronDown, Star } from "lucide-react";
 import { CountUp } from "@/components/ui/count-up";
 import { motion } from "framer-motion";
 
+import Link from "next/link";
+
 interface InfoCard {
     title: string;
     description: string;
@@ -22,6 +24,7 @@ interface ServiceInfoSectionProps {
     ctaText: string;
     infoCards: InfoCard[];
     reversed?: boolean;
+    link?: string;
 }
 
 export function ServiceInfoSection({
@@ -32,6 +35,7 @@ export function ServiceInfoSection({
     ctaText,
     infoCards,
     reversed = false,
+    link = "/instagram",
 }: ServiceInfoSectionProps) {
     // Parse review count string to number for animation (e.g. "10,450+" -> 10450)
     const reviewCountNum = parseInt(reviewCount.replace(/[^0-9]/g, "")) || 0;
@@ -141,12 +145,14 @@ export function ServiceInfoSection({
                             </ul>
 
                             <div className="pt-6 w-full sm:w-auto">
-                                <Button
-                                    size="lg"
-                                    className="w-full sm:w-auto px-10 py-6 text-base font-bold bg-[#FF7A59] hover:bg-[#ff6a45] text-white shadow-lg shadow-orange-500/20 transition-all hover:scale-105 rounded-xl uppercase tracking-wide"
-                                >
-                                    {ctaText}
-                                </Button>
+                                <Link href={link} className="block w-full sm:w-auto">
+                                    <Button
+                                        size="lg"
+                                        className="w-full sm:w-auto px-10 py-6 text-base font-bold bg-[#FF7A59] hover:bg-[#ff6a45] text-white shadow-lg shadow-orange-500/20 transition-all hover:scale-105 rounded-xl uppercase tracking-wide"
+                                    >
+                                        {ctaText}
+                                    </Button>
+                                </Link>
                             </div>
                         </div>
 

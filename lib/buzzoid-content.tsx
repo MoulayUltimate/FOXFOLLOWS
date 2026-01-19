@@ -5,6 +5,7 @@ export const instagramFollowersContent = {
     rating: 5.0,
     reviewCount: "10,450+",
     ctaText: "Buy Instagram Followers",
+    link: "/instagram?service=followers",
     benefits: [
         "100% legitimate followers that keep your account safe",
         "Packages of 10-200,000 real followers available",
@@ -36,6 +37,7 @@ export const instagramLikesContent = {
     rating: 4.9,
     reviewCount: "8,200+",
     ctaText: "Buy Instagram Likes",
+    link: "/instagram?service=likes",
     benefits: [
         "Real likes from active users",
         "Instant delivery within minutes",
@@ -67,6 +69,7 @@ export const instagramViewsContent = {
     rating: 4.9,
     reviewCount: "5,100+",
     ctaText: "Buy Instagram Views",
+    link: "/instagram?service=views",
     benefits: [
         "High-retention views for Reels and Videos",
         "Instant start",
