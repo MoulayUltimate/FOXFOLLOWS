@@ -1,4 +1,6 @@
 import { Suspense } from "react";
+
+export const runtime = "edge";
 import { Metadata } from "next";
 import { PlatformPage } from "@/components/product/platform-page";
 import { getPlatform } from "@/lib/products";
