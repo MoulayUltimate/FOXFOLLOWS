@@ -3,12 +3,7 @@ import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
-import { CartProvider } from "@/components/cart-provider";
-import { Toaster } from "@/components/ui/sonner";
-import { SalesPopup } from "@/components/ui/sales-popup";
-import { AnalyticsTracker } from "@/components/analytics-tracker";
+import { LayoutWrapper } from "@/components/layout-wrapper";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const poppins = Poppins({
@@ -53,14 +48,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${poppins.variable} font-sans antialiased`}
       >
-        <CartProvider>
-          <Header />
-          <main className="min-h-screen">{children}</main>
-          <Footer />
-          <Toaster />
-          <SalesPopup />
-          <AnalyticsTracker />
-        </CartProvider>
+        <LayoutWrapper>{children}</LayoutWrapper>
         <Analytics />
       </body>
     </html>

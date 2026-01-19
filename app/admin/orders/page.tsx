@@ -119,7 +119,6 @@ export default function AdminOrdersPage() {
 
     return (
         <div className="space-y-8">
-            {/* Header */}
             <div>
                 <h1 className="text-3xl font-bold">Orders</h1>
                 <p className="text-muted-foreground mt-1">
@@ -127,55 +126,23 @@ export default function AdminOrdersPage() {
                 </p>
             </div>
 
-            {/* Stats Cards */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-                <StatsCard
-                    title="Total Orders"
-                    value={data.summary.totalOrders}
-                    icon={<ShoppingCart className="h-5 w-5" />}
-                />
-                <StatsCard
-                    title="Pending"
-                    value={data.summary.pendingOrders}
-                    icon={<Clock className="h-5 w-5" />}
-                />
-                <StatsCard
-                    title="Completed"
-                    value={data.summary.completedOrders}
-                    icon={<CheckCircle className="h-5 w-5" />}
-                />
-                <StatsCard
-                    title="Failed"
-                    value={data.summary.failedOrders}
-                    icon={<XCircle className="h-5 w-5" />}
-                />
-                <StatsCard
-                    title="Revenue"
-                    value={`$${data.summary.totalRevenue.toFixed(2)}`}
-                    icon={<DollarSign className="h-5 w-5" />}
-                />
+                <StatsCard title="Total Orders" value={data.summary.totalOrders} icon={<ShoppingCart className="h-5 w-5" />} />
+                <StatsCard title="Pending" value={data.summary.pendingOrders} icon={<Clock className="h-5 w-5" />} />
+                <StatsCard title="Completed" value={data.summary.completedOrders} icon={<CheckCircle className="h-5 w-5" />} />
+                <StatsCard title="Failed" value={data.summary.failedOrders} icon={<XCircle className="h-5 w-5" />} />
+                <StatsCard title="Revenue" value={`$${data.summary.totalRevenue.toFixed(2)}`} icon={<DollarSign className="h-5 w-5" />} />
             </div>
 
-            {/* Filter Buttons */}
             <div className="flex gap-2 flex-wrap">
                 {["all", "pending", "completed", "failed"].map((status) => (
-                    <Button
-                        key={status}
-                        variant={filter === status ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setFilter(status)}
-                    >
+                    <Button key={status} variant={filter === status ? "default" : "outline"} size="sm" onClick={() => setFilter(status)}>
                         {status.charAt(0).toUpperCase() + status.slice(1)}
                     </Button>
                 ))}
             </div>
 
-            {/* Orders Table */}
-            <OrdersTable
-                orders={data.orders}
-                onUpdateStatus={handleUpdateStatus}
-                onDelete={handleDelete}
-            />
+            <OrdersTable orders={data.orders} onUpdateStatus={handleUpdateStatus} onDelete={handleDelete} />
         </div>
     );
 }

@@ -104,13 +104,6 @@ export default function AdminLoginPage() {
                             {isLoading ? "Signing in..." : "Sign In"}
                         </Button>
                     </form>
-
-                    {/* Dev credentials hint */}
-                    <div className="mt-6 p-3 rounded-lg bg-muted/50 text-xs text-muted-foreground">
-                        <p className="font-medium">Development Credentials:</p>
-                        <p>Username: admin</p>
-                        <p>Password: foxfollows2024</p>
-                    </div>
                 </div>
             </div>
         </div>
