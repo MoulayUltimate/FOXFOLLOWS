@@ -58,53 +58,53 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Get D1 binding from env
+        // Get env bindings
         const env = (request as any).env;
 
-        // Default admin credentials for development (when no DB)
-        if (!env?.DB) {
-            // Allow default admin login for development
-            if (username === 'admin' && password === 'foxfollows2024') {
-                const token = await createToken(username);
-                const response = NextResponse.json({ success: true, username });
-                response.cookies.set('admin_token', token, {
-                    httpOnly: true,
-                    secure: true,
-                    sameSite: 'lax',
-                    maxAge: 24 * 60 * 60, // 24 hours
-                    path: '/',
-                });
-                return response;
+        // Get admin credentials from environment variables
+        const adminUsername = env?.ADMIN_USERNAME || 'admin';
+        const adminPassword = env?.ADMIN_PASSWORD || 'foxfollows2024';
+
+        // Simple credential check using environment variables
+        if (username === adminUsername && password === adminPassword) {
+            const token = await createToken(username);
+            const response = NextResponse.json({ success: true, username });
+            response.cookies.set('admin_token', token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'lax',
+                maxAge: 24 * 60 * 60, // 24 hours
+                path: '/',
+            });
+            return response;
+        }
+
+        // If env credentials don't match, check database as fallback
+        if (env?.DB) {
+            const user = await env.DB.prepare(
+                'SELECT * FROM admin_users WHERE username = ?'
+            )
+                .bind(username)
+                .first();
+
+            if (user) {
+                const isValid = await verifyPassword(password, user.password_hash);
+                if (isValid) {
+                    const token = await createToken(username);
+                    const response = NextResponse.json({ success: true, username });
+                    response.cookies.set('admin_token', token, {
+                        httpOnly: true,
+                        secure: true,
+                        sameSite: 'lax',
+                        maxAge: 24 * 60 * 60,
+                        path: '/',
+                    });
+                    return response;
+                }
             }
-            return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
         }
 
-        // Check credentials in database
-        const user = await env.DB.prepare(
-            'SELECT * FROM admin_users WHERE username = ?'
-        )
-            .bind(username)
-            .first();
-
-        if (!user) {
-            return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
-        }
-
-        const isValid = await verifyPassword(password, user.password_hash);
-        if (!isValid) {
-            return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
-        }
-
-        const token = await createToken(username);
-        const response = NextResponse.json({ success: true, username });
-        response.cookies.set('admin_token', token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'lax',
-            maxAge: 24 * 60 * 60,
-            path: '/',
-        });
-        return response;
+        return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     } catch (error) {
         console.error('Auth error:', error);
         return NextResponse.json({ error: 'Authentication failed' }, { status: 500 });
