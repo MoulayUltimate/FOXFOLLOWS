@@ -5,3 +5,14 @@ pages_build_output_dir = ".vercel/output/static"
 
 [placement]
 mode = "smart"
+
+# D1 Database binding
+# To set up:
+# 1. Go to Cloudflare Dashboard > Workers & Pages > D1
+# 2. Create a database named "fox-follows-db"
+# 3. Copy the database_id and paste it below
+# 4. Run the schema from lib/db/schema.sql in the D1 console
+[[d1_databases]]
+binding = "DB"
+database_name = "fox-follows-db"
+database_id = "5c384e71-ad9d-4e2a-957e-8fb5c472e150"
