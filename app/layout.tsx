@@ -7,6 +7,7 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { CartProvider } from "@/components/cart-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { SalesPopup } from "@/components/ui/sales-popup";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const poppins = Poppins({
@@ -35,7 +36,7 @@ export const metadata: Metadata = {
     description:
       "The #1 trusted source for real social media growth services",
   },
-    generator: 'v0.app'
+  generator: 'v0.app'
 };
 
 export default function RootLayout({
@@ -53,6 +54,7 @@ export default function RootLayout({
           <main className="min-h-screen">{children}</main>
           <Footer />
           <Toaster />
+          <SalesPopup />
         </CartProvider>
         <Analytics />
       </body>

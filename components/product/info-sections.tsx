@@ -43,7 +43,7 @@ export function InfoSections({ content, serviceName = "Followers" }: InfoSection
               <div key={index} className="text-center">
                 <div
                   className="text-2xl font-bold sm:text-3xl"
-                  style={{ color: content.color }}
+                  style={{ color: content.id === 'snapchat' ? '#000000' : content.color }}
                 >
                   {stat.value}
                 </div>
@@ -182,61 +182,6 @@ export function InfoSections({ content, serviceName = "Followers" }: InfoSection
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="bg-secondary/30 py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold text-foreground sm:text-4xl">
-              What Our Customers Say
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-              Join thousands of satisfied customers who have grown their {content.name}{" "}
-              with FoxFollows.
-            </p>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2">
-            {content.testimonials.map((testimonial, index) => (
-              <Card key={index} className="border-border bg-card">
-                <CardContent className="p-6">
-                  <div className="mb-4 flex items-center gap-1">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="h-5 w-5 fill-yellow-400 text-yellow-400"
-                      />
-                    ))}
-                  </div>
-                  <div className="relative mb-4">
-                    <Quote
-                      className="absolute -left-2 -top-2 h-8 w-8 text-primary/20"
-                    />
-                    <p className="relative z-10 text-foreground">
-                      {testimonial.text}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="flex h-10 w-10 items-center justify-center rounded-full text-white"
-                      style={{ backgroundColor: content.color }}
-                    >
-                      {testimonial.avatar}
-                    </div>
-                    <div>
-                      <div className="font-semibold text-foreground">
-                        {testimonial.name}
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        {testimonial.username}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Trust Badges */}
       <section className="py-16">
