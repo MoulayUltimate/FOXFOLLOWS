@@ -15,9 +15,9 @@ export async function POST(request: Request) {
 
         const { username, password } = body;
 
-        // Use process.env directly - next-on-pages polyfills this
-        const adminUsername = process.env.ADMIN_USERNAME || 'admin';
-        const adminPassword = process.env.ADMIN_PASSWORD || 'foxfollows2024';
+        // HARDCODED CREDENTIALS AS REQUESTED
+        const adminUsername = 'admin';
+        const adminPassword = 'foxfollows2024';
 
         if (username === adminUsername && password === adminPassword) {
             const token = btoa(JSON.stringify({ u: username, t: Date.now() }));
