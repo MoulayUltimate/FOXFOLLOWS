@@ -62,21 +62,21 @@ export async function POST(request: NextRequest) {
         // Get env bindings
         let env: any = {};
         try {
+            // Try to get context from Cloudflare
             const ctx = getRequestContext();
             if (ctx && ctx.env) {
                 env = ctx.env;
             }
         } catch (e) {
-            console.log('getRequestContext failed, falling back to process.env');
+            // Fallback for local or other environments
         }
 
-        // Get admin credentials from environment variables (check both env and process.env)
-        const adminUsername = env?.ADMIN_USERNAME || process.env.ADMIN_USERNAME || 'admin';
-        const adminPassword = env?.ADMIN_PASSWORD || process.env.ADMIN_PASSWORD || 'foxfollows2024';
+        // Get admin credentials from environment variables
+        // On Cloudflare Pages, these are in env.VARIABLE_NAME
+        const adminUsername = env?.ADMIN_USERNAME || 'admin';
+        const adminPassword = env?.ADMIN_PASSWORD || 'foxfollows2024';
 
-        console.log('Attempting login for:', username);
-
-        // Simple credential check using environment variables
+        // Simple credential check
         if (username === adminUsername && password === adminPassword) {
             const token = await createToken(username);
             const response = NextResponse.json({ success: true, username });
@@ -90,8 +90,8 @@ export async function POST(request: NextRequest) {
             return response;
         }
 
-        // If env credentials don't match, check database as fallback
-        const db = env?.DB || (process.env as any)?.DB;
+        // Database fallback
+        const db = env?.DB;
         if (db) {
             try {
                 const user = await db.prepare(
@@ -116,17 +116,16 @@ export async function POST(request: NextRequest) {
                     }
                 }
             } catch (dbError) {
-                console.error('Database auth error:', dbError);
-                // Continue to return invalid credentials if DB fails
+                console.error('DB Auth Error:', dbError);
             }
         }
 
         return NextResponse.json({ error: 'Invalid username or password' }, { status: 401 });
     } catch (error: any) {
-        console.error('Auth error:', error);
+        console.error('Auth API Error:', error);
         return NextResponse.json({
             error: 'Authentication failed',
-            details: error?.message || String(error)
+            details: error?.message || 'Unknown error'
         }, { status: 500 });
     }
 }

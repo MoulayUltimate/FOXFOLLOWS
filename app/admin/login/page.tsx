@@ -34,16 +34,24 @@ export default function AdminLoginPage() {
                 body: JSON.stringify(credentials),
             });
 
-            const data = await response.json();
-
-            if (response.ok) {
-                toast.success("Login successful!");
-                router.push("/admin");
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+                const data = await response.json();
+                if (response.ok) {
+                    toast.success("Login successful!");
+                    router.push("/admin");
+                } else {
+                    const errorMessage = data.details ? `${data.error}: ${data.details}` : (data.error || "Invalid credentials");
+                    toast.error(errorMessage);
+                }
             } else {
-                const errorMessage = data.details ? `${data.error}: ${data.details}` : (data.error || "Invalid credentials");
-                toast.error(errorMessage);
+                // Not JSON - likely an HTML error page or plain text
+                const text = await response.text();
+                console.error("Non-JSON response:", text);
+                toast.error(`Server error (${response.status}). Please check Cloudflare logs.`);
             }
         } catch (error: any) {
+            console.error("Login fetch error:", error);
             toast.error("Login failed: " + (error?.message || "Please try again."));
         } finally {
             setIsLoading(false);
