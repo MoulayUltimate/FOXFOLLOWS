@@ -15,7 +15,7 @@ export async function POST(request: Request) {
 
         const { username, password } = body;
 
-        // HARDCODED CREDENTIALS AS REQUESTED
+        // HARDCODED CREDENTIALS
         const adminUsername = 'admin';
         const adminPassword = 'foxfollows2024';
 
