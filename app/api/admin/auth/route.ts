@@ -59,18 +59,22 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Get env bindings using Cloudflare Pages runtime
+        // Get env bindings
         let env: any = {};
         try {
-            env = getRequestContext().env;
+            const ctx = getRequestContext();
+            if (ctx && ctx.env) {
+                env = ctx.env;
+            }
         } catch (e) {
-            // Fallback for local development
-            console.log('Running outside Cloudflare, using defaults');
+            console.log('getRequestContext failed, falling back to process.env');
         }
 
-        // Get admin credentials from environment variables
-        const adminUsername = env?.ADMIN_USERNAME || 'admin';
-        const adminPassword = env?.ADMIN_PASSWORD || 'foxfollows2024';
+        // Get admin credentials from environment variables (check both env and process.env)
+        const adminUsername = env?.ADMIN_USERNAME || process.env.ADMIN_USERNAME || 'admin';
+        const adminPassword = env?.ADMIN_PASSWORD || process.env.ADMIN_PASSWORD || 'foxfollows2024';
+
+        console.log('Attempting login for:', username);
 
         // Simple credential check using environment variables
         if (username === adminUsername && password === adminPassword) {
@@ -87,34 +91,43 @@ export async function POST(request: NextRequest) {
         }
 
         // If env credentials don't match, check database as fallback
-        if (env?.DB) {
-            const user = await env.DB.prepare(
-                'SELECT * FROM admin_users WHERE username = ?'
-            )
-                .bind(username)
-                .first();
+        const db = env?.DB || (process.env as any)?.DB;
+        if (db) {
+            try {
+                const user = await db.prepare(
+                    'SELECT * FROM admin_users WHERE username = ?'
+                )
+                    .bind(username)
+                    .first();
 
-            if (user) {
-                const isValid = await verifyPassword(password, user.password_hash);
-                if (isValid) {
-                    const token = await createToken(username);
-                    const response = NextResponse.json({ success: true, username });
-                    response.cookies.set('admin_token', token, {
-                        httpOnly: true,
-                        secure: true,
-                        sameSite: 'lax',
-                        maxAge: 24 * 60 * 60,
-                        path: '/',
-                    });
-                    return response;
+                if (user) {
+                    const isValid = await verifyPassword(password, user.password_hash);
+                    if (isValid) {
+                        const token = await createToken(username);
+                        const response = NextResponse.json({ success: true, username });
+                        response.cookies.set('admin_token', token, {
+                            httpOnly: true,
+                            secure: true,
+                            sameSite: 'lax',
+                            maxAge: 24 * 60 * 60,
+                            path: '/',
+                        });
+                        return response;
+                    }
                 }
+            } catch (dbError) {
+                console.error('Database auth error:', dbError);
+                // Continue to return invalid credentials if DB fails
             }
         }
 
-        return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
-    } catch (error) {
+        return NextResponse.json({ error: 'Invalid username or password' }, { status: 401 });
+    } catch (error: any) {
         console.error('Auth error:', error);
-        return NextResponse.json({ error: 'Authentication failed' }, { status: 500 });
+        return NextResponse.json({
+            error: 'Authentication failed',
+            details: error?.message || String(error)
+        }, { status: 500 });
     }
 }
 

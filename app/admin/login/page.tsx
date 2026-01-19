@@ -40,10 +40,11 @@ export default function AdminLoginPage() {
                 toast.success("Login successful!");
                 router.push("/admin");
             } else {
-                toast.error(data.error || "Invalid credentials");
+                const errorMessage = data.details ? `${data.error}: ${data.details}` : (data.error || "Invalid credentials");
+                toast.error(errorMessage);
             }
-        } catch (error) {
-            toast.error("Login failed. Please try again.");
+        } catch (error: any) {
+            toast.error("Login failed: " + (error?.message || "Please try again."));
         } finally {
             setIsLoading(false);
         }
