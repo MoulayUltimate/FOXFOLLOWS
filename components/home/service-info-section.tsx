@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Check, ChevronDown, Star } from "lucide-react";
@@ -49,48 +51,54 @@ export function ServiceInfoSection({
 
                         {/* Info Cards Column */}
                         <div className={`grid sm:grid-cols-2 gap-6 ${reversed ? 'lg:order-2' : 'lg:order-1'}`}>
-                            {infoCards.map((card, index) => (
-                                <motion.div
-                                    key={index}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                                >
-                                    <Card className="relative p-6 pt-8 border-0 shadow-sm bg-white rounded-2xl overflow-hidden group hover:shadow-md transition-all duration-300 h-full">
-                                        <div className="flex flex-col items-center text-center space-y-4">
-                                            {/* Icon/Illustration Placeholder */}
-                                            <div className="mb-2 relative">
-                                                <div className="absolute inset-0 bg-blue-100 rounded-full blur-xl opacity-50 scale-150"></div>
-                                                <motion.div
-                                                    className="relative text-[#FF7A59]"
-                                                    whileHover={{ scale: 1.1, rotate: 5 }}
-                                                    transition={{ type: "spring", stiffness: 300 }}
-                                                >
-                                                    {card.icon}
-                                                </motion.div>
-                                            </div>
+                            {infoCards.map((card, index) => {
+                                const [isExpanded, setIsExpanded] = useState(false);
+                                return (
+                                    <motion.div
+                                        key={index}
+                                        initial={{ opacity: 0, y: 20 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        viewport={{ once: true }}
+                                        transition={{ duration: 0.5, delay: index * 0.1 }}
+                                    >
+                                        <Card
+                                            className="relative p-6 pt-8 border-0 shadow-sm bg-white rounded-2xl overflow-hidden group hover:shadow-md transition-all duration-300 h-full cursor-pointer"
+                                            onClick={() => setIsExpanded(!isExpanded)}
+                                        >
+                                            <div className="flex flex-col items-center text-center space-y-4">
+                                                {/* Icon/Illustration Placeholder */}
+                                                <div className="mb-2 relative">
+                                                    <div className="absolute inset-0 bg-blue-100 rounded-full blur-xl opacity-50 scale-150"></div>
+                                                    <motion.div
+                                                        className="relative text-[#FF7A59]"
+                                                        whileHover={{ scale: 1.1, rotate: 5 }}
+                                                        transition={{ type: "spring", stiffness: 300 }}
+                                                    >
+                                                        {card.icon}
+                                                    </motion.div>
+                                                </div>
 
-                                            <h3 className="text-lg font-bold text-slate-900 leading-tight px-2">
-                                                {card.title}
-                                            </h3>
+                                                <h3 className="text-lg font-bold text-slate-900 leading-tight px-2">
+                                                    {card.title}
+                                                </h3>
 
-                                            <div className="relative">
-                                                <p className="text-sm text-slate-600 leading-relaxed line-clamp-[8] group-hover:line-clamp-none transition-all duration-300">
-                                                    {card.description}
-                                                </p>
-                                                <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent group-hover:hidden"></div>
-                                            </div>
+                                                <div className="relative">
+                                                    <p className={`text-sm text-slate-600 leading-relaxed transition-all duration-300 ${isExpanded ? 'line-clamp-none' : 'line-clamp-[8] group-hover:line-clamp-none'}`}>
+                                                        {card.description}
+                                                    </p>
+                                                    <div className={`absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent transition-opacity duration-300 ${isExpanded ? 'opacity-0' : 'opacity-100 group-hover:opacity-0'}`}></div>
+                                                </div>
 
-                                            <div className="pt-2 mt-auto">
-                                                <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-[#FF7A59] group-hover:text-white transition-colors cursor-pointer">
-                                                    <ChevronDown className="w-5 h-5" />
+                                                <div className="pt-2 mt-auto">
+                                                    <div className={`w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 transition-all duration-300 ${isExpanded ? 'bg-[#FF7A59] text-white rotate-180' : 'group-hover:bg-[#FF7A59] group-hover:text-white'}`}>
+                                                        <ChevronDown className="w-5 h-5" />
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </Card>
-                                </motion.div>
-                            ))}
+                                        </Card>
+                                    </motion.div>
+                                );
+                            })}
                         </div>
 
                         {/* Main Content Column */}
