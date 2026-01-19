@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getRequestContext } from '@cloudflare/next-on-pages';
 
 export const runtime = 'edge';
 
@@ -11,36 +10,28 @@ export async function POST(request: NextRequest) {
         try {
             body = await request.json();
         } catch (e) {
-            return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+            return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
         }
 
         const { username, password } = body;
         if (!username || !password) {
-            return NextResponse.json({ error: 'Username and password required' }, { status: 400 });
+            return NextResponse.json({ error: 'Missing credentials' }, { status: 400 });
         }
 
-        // 2. Get environment variables safely
-        let env: any = {};
-        try {
-            const context = getRequestContext();
-            if (context && context.env) {
-                env = context.env;
-            }
-        } catch (e) {
-            // Fallback for local
-            env = process.env;
-        }
-
-        const adminUsername = env?.ADMIN_USERNAME || 'admin';
-        const adminPassword = env?.ADMIN_PASSWORD || 'foxfollows2024';
+        // 2. Get environment variables
+        // On Cloudflare Pages, environment variables are available on process.env
+        const adminUsername = process.env.ADMIN_USERNAME || 'admin';
+        const adminPassword = process.env.ADMIN_PASSWORD || 'foxfollows2024';
 
         // 3. Simple credential check
         if (username === adminUsername && password === adminPassword) {
             const response = NextResponse.json({ success: true, username });
 
-            // Set a simple session cookie
-            // We'll use a simple string for now to rule out crypto issues
-            const token = btoa(JSON.stringify({ username, exp: Date.now() + 86400000 }));
+            // Simple token
+            const token = btoa(JSON.stringify({
+                u: username,
+                t: Date.now()
+            }));
 
             response.cookies.set('admin_token', token, {
                 httpOnly: true,
@@ -55,10 +46,10 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({ error: 'Invalid username or password' }, { status: 401 });
     } catch (error: any) {
-        console.error('Auth Error:', error);
+        // Always return JSON even on error
         return NextResponse.json({
-            error: 'Server error',
-            details: error?.message || String(error)
+            error: 'Server Error',
+            details: error?.message || 'Unknown error'
         }, { status: 500 });
     }
 }
@@ -70,16 +61,7 @@ export async function GET(request: NextRequest) {
         if (!token) {
             return NextResponse.json({ authenticated: false }, { status: 401 });
         }
-
-        try {
-            const payload = JSON.parse(atob(token));
-            if (payload.exp < Date.now()) {
-                return NextResponse.json({ authenticated: false }, { status: 401 });
-            }
-            return NextResponse.json({ authenticated: true, username: payload.username });
-        } catch (e) {
-            return NextResponse.json({ authenticated: false }, { status: 401 });
-        }
+        return NextResponse.json({ authenticated: true });
     } catch (error) {
         return NextResponse.json({ authenticated: false }, { status: 401 });
     }
