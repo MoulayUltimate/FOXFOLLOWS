@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { hashPassword, verifyPassword } from '@/lib/db';
 import { cookies } from 'next/headers';
+import { getRequestContext } from '@cloudflare/next-on-pages';
 
 export const runtime = 'edge';
 
@@ -58,8 +59,14 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Get env bindings
-        const env = (request as any).env;
+        // Get env bindings using Cloudflare Pages runtime
+        let env: any = {};
+        try {
+            env = getRequestContext().env;
+        } catch (e) {
+            // Fallback for local development
+            console.log('Running outside Cloudflare, using defaults');
+        }
 
         // Get admin credentials from environment variables
         const adminUsername = env?.ADMIN_USERNAME || 'admin';
