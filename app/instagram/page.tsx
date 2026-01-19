@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-export const runtime = "edge";
+
 import { Metadata } from "next";
 import { PlatformPage } from "@/components/product/platform-page";
 import { getPlatform } from "@/lib/products";
@@ -14,22 +14,14 @@ export const metadata: Metadata = {
     "buy instagram followers, buy instagram likes, buy instagram views, instagram growth",
 };
 
-interface PageProps {
-  searchParams: Promise<{ service?: string; username?: string }>;
-}
-
-export default async function InstagramPage({ searchParams }: PageProps) {
+export default function InstagramPage() {
   const platform = getPlatform("instagram");
   if (!platform) notFound();
-
-  const { service, username } = await searchParams;
 
   return (
     <Suspense fallback={<div className="min-h-screen" />}>
       <PlatformPage
         platform={platform}
-        initialService={service}
-        initialUsername={username}
       />
     </Suspense>
   );

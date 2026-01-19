@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-export const runtime = "edge";
+
 import { Metadata } from "next";
 import { PlatformPage } from "@/components/product/platform-page";
 import { getPlatform } from "@/lib/products";
@@ -14,22 +14,14 @@ export const metadata: Metadata = {
     "buy youtube subscribers, buy youtube views, buy youtube likes, youtube growth",
 };
 
-interface PageProps {
-  searchParams: Promise<{ service?: string; username?: string }>;
-}
-
-export default async function YouTubePage({ searchParams }: PageProps) {
+export default function YouTubePage() {
   const platform = getPlatform("youtube");
   if (!platform) notFound();
-
-  const { service, username } = await searchParams;
 
   return (
     <Suspense fallback={<div className="min-h-screen" />}>
       <PlatformPage
         platform={platform}
-        initialService={service}
-        initialUsername={username}
       />
     </Suspense>
   );

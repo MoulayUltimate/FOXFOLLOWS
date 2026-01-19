@@ -36,7 +36,10 @@ export const metadata: Metadata = {
     description:
       "The #1 trusted source for real social media growth services",
   },
-  generator: 'v0.app'
+  generator: 'v0.app',
+  icons: {
+    icon: '/icon.svg',
+  },
 };
 
 export default function RootLayout({

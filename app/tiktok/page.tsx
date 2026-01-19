@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-export const runtime = "edge";
+
 import { Metadata } from "next";
 import { PlatformPage } from "@/components/product/platform-page";
 import { getPlatform } from "@/lib/products";
@@ -14,22 +14,14 @@ export const metadata: Metadata = {
     "buy tiktok followers, buy tiktok likes, buy tiktok views, tiktok growth",
 };
 
-interface PageProps {
-  searchParams: Promise<{ service?: string; username?: string }>;
-}
-
-export default async function TikTokPage({ searchParams }: PageProps) {
+export default function TikTokPage() {
   const platform = getPlatform("tiktok");
   if (!platform) notFound();
-
-  const { service, username } = await searchParams;
 
   return (
     <Suspense fallback={<div className="min-h-screen" />}>
       <PlatformPage
         platform={platform}
-        initialService={service}
-        initialUsername={username}
       />
     </Suspense>
   );
