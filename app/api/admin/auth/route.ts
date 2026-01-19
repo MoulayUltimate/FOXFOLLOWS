@@ -17,11 +17,12 @@ export async function POST(request: NextRequest) {
 
         const { username, password } = body;
 
-        // Hardcoded for testing to rule out env var crashes
-        const validUser = 'admin';
-        const validPass = 'foxfollows2024';
+        // Get credentials from environment variables
+        // Fallback to default only if env vars are not set
+        const adminUsername = process.env.ADMIN_USERNAME || 'admin';
+        const adminPassword = process.env.ADMIN_PASSWORD || 'foxfollows2024';
 
-        if (username === validUser && password === validPass) {
+        if (username === adminUsername && password === adminPassword) {
             const token = btoa(JSON.stringify({ u: username, t: Date.now() }));
 
             const response = new Response(JSON.stringify({ success: true, username }), {
