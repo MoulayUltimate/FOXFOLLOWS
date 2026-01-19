@@ -8,6 +8,7 @@ import { Footer } from "@/components/footer";
 import { CartProvider } from "@/components/cart-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { SalesPopup } from "@/components/ui/sales-popup";
+import { AnalyticsTracker } from "@/components/analytics-tracker";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const poppins = Poppins({
@@ -58,6 +59,7 @@ export default function RootLayout({
           <Footer />
           <Toaster />
           <SalesPopup />
+          <AnalyticsTracker />
         </CartProvider>
         <Analytics />
       </body>
