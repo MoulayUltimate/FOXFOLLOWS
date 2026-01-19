@@ -91,13 +91,12 @@ function StarRating({
           className={`${interactive ? "cursor-pointer" : "cursor-default"} transition-transform ${interactive && hoverRating >= star ? "scale-110" : ""}`}
         >
           <Star
-            className={`h-5 w-5 ${
-              (hoverRating || rating) >= star
+            className={`h-5 w-5 ${(hoverRating || rating) >= star
                 ? interactive
                   ? "fill-primary text-primary"
                   : "fill-emerald-500 text-emerald-500"
                 : "fill-muted text-muted-foreground"
-            }`}
+              }`}
           />
         </button>
       ))}
@@ -111,14 +110,12 @@ function TrustpilotStars({ rating }: { rating: number }) {
       {[1, 2, 3, 4, 5].map((star) => (
         <div
           key={star}
-          className={`w-6 h-6 flex items-center justify-center ${
-            rating >= star ? "bg-emerald-500" : "bg-muted"
-          }`}
+          className={`w-6 h-6 flex items-center justify-center ${rating >= star ? "bg-emerald-500" : "bg-muted"
+            }`}
         >
           <Star
-            className={`h-4 w-4 ${
-              rating >= star ? "fill-white text-white" : "fill-muted-foreground text-muted-foreground"
-            }`}
+            className={`h-4 w-4 ${rating >= star ? "fill-white text-white" : "fill-muted-foreground text-muted-foreground"
+              }`}
           />
         </div>
       ))}
@@ -147,7 +144,7 @@ export function ReviewsSection({ platformName }: { platformName: string }) {
     }
 
     setIsSubmitting(true);
-    
+
     // Simulate submission
     setTimeout(() => {
       const newReview: Review = {
@@ -240,10 +237,13 @@ export function ReviewsSection({ platformName }: { platformName: string }) {
           {/* Reviews List */}
           <div className="space-y-6">
             {displayedReviews.map((review) => (
-              <div key={review.id} className="space-y-2">
+              <div key={review.id} className="space-y-2 bg-secondary/20 p-4 rounded-xl border border-border/50">
                 <TrustpilotStars rating={review.rating} />
-                <p className="text-foreground">"{review.review}"</p>
-                <p className="text-muted-foreground text-sm">{review.name}</p>
+                <p className="text-foreground font-medium">"{review.review}"</p>
+                <p className="text-muted-foreground text-sm flex items-center gap-2">
+                  {review.name}
+                  <span className="text-xs bg-green-500/10 text-green-600 px-1.5 py-0.5 rounded-full font-medium">Verified</span>
+                </p>
               </div>
             ))}
 

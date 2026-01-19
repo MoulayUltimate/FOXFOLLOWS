@@ -94,7 +94,7 @@ export function ServiceInfoSection({
                         </div>
 
                         {/* Main Content Column */}
-                        <div className={`space-y-6 ${reversed ? 'lg:order-1' : 'lg:order-2'} pt-4`}>
+                        <div className={`space-y-6 ${reversed ? 'lg:order-1' : 'lg:order-2'} pt-4 flex flex-col items-center lg:items-start text-center lg:text-left`}>
                             {/* Rating Badge */}
                             <div className="flex items-center gap-3">
                                 <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-white border border-slate-100 shadow-sm">
@@ -112,11 +112,11 @@ export function ServiceInfoSection({
                                 {title}
                             </h2>
 
-                            <ul className="space-y-3">
+                            <ul className="space-y-3 w-full max-w-md lg:max-w-none mx-auto lg:mx-0">
                                 {benefits.map((benefit, index) => (
                                     <motion.li
                                         key={index}
-                                        className="flex items-start gap-3"
+                                        className="flex items-start gap-3 justify-center lg:justify-start text-left"
                                         initial={{ opacity: 0, x: -10 }}
                                         whileInView={{ opacity: 1, x: 0 }}
                                         viewport={{ once: true }}
@@ -132,7 +132,7 @@ export function ServiceInfoSection({
                                 ))}
                             </ul>
 
-                            <div className="pt-6">
+                            <div className="pt-6 w-full sm:w-auto">
                                 <Button
                                     size="lg"
                                     className="w-full sm:w-auto px-10 py-6 text-base font-bold bg-[#FF7A59] hover:bg-[#ff6a45] text-white shadow-lg shadow-orange-500/20 transition-all hover:scale-105 rounded-xl uppercase tracking-wide"

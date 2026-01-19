@@ -102,7 +102,7 @@ export function QuickOrderSection() {
                     <div className="bg-slate-50 border-t border-slate-100 px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
 
                         {/* Rating */}
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1 order-2 md:order-1">
                             {[1, 2, 3, 4, 5].map((i) => (
                                 <div key={i} className="bg-[#00C68A] rounded p-1">
                                     <Star className="w-3.5 h-3.5 fill-white text-white" />
@@ -112,28 +112,29 @@ export function QuickOrderSection() {
                         </div>
 
                         {/* Live Ticker */}
-                        <div className="flex-1 flex items-center justify-center bg-[#E0F7EF] text-[#00875F] px-4 py-2 rounded-lg gap-3 min-w-[300px]">
-                            <div className="w-2 h-2 rounded-full bg-[#00C68A] animate-pulse" />
+                        <div className="flex-1 flex items-center justify-center bg-[#E0F7EF] text-[#00875F] px-4 py-2 rounded-lg gap-3 w-full md:w-auto min-w-0 md:min-w-[300px] order-1 md:order-2">
+                            <div className="w-2 h-2 rounded-full bg-[#00C68A] animate-pulse shrink-0" />
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={activityIndex}
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
-                                    className="flex items-center gap-2 font-medium whitespace-nowrap"
+                                    className="flex items-center gap-2 font-medium whitespace-nowrap overflow-hidden text-ellipsis"
                                 >
                                     <span className="font-bold">{recentActivity[activityIndex].text}</span>
-                                    <CheckCircle2 className="w-4 h-4" />
+                                    <CheckCircle2 className="w-4 h-4 shrink-0" />
                                     <span className="opacity-75 text-xs">{recentActivity[activityIndex].time}</span>
                                 </motion.div>
                             </AnimatePresence>
                         </div>
 
                         {/* Payment Methods */}
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-4 order-3">
                             <div className="w-px h-8 bg-slate-200 mx-4 hidden md:block"></div>
                             <div className="flex items-center gap-2 text-slate-600 font-semibold border border-slate-200 rounded-lg px-3 py-1.5 bg-white">
-                                <ApplePayLogo className="h-5" />
+                                <span className="text-xs font-medium mr-1">Pay with</span>
+                                <ApplePayLogo className="h-8 w-auto" />
                             </div>
                         </div>
 
