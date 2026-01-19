@@ -1,5 +1,3 @@
-import { getRequestContext } from '@cloudflare/next-on-pages';
-
 export const runtime = 'edge';
 
 export async function POST(request: Request) {
@@ -17,24 +15,9 @@ export async function POST(request: Request) {
 
         const { username, password } = body;
 
-        let env: any = {};
-        try {
-            // Try to get Cloudflare env
-            const ctx = getRequestContext();
-            if (ctx && ctx.env) {
-                env = ctx.env;
-            }
-        } catch (e) {
-            // Fallback to process.env
-            try {
-                env = process.env || {};
-            } catch (e2) {
-                env = {};
-            }
-        }
-
-        const adminUsername = env.ADMIN_USERNAME || 'admin';
-        const adminPassword = env.ADMIN_PASSWORD || 'foxfollows2024';
+        // Use process.env directly - next-on-pages polyfills this
+        const adminUsername = process.env.ADMIN_USERNAME || 'admin';
+        const adminPassword = process.env.ADMIN_PASSWORD || 'foxfollows2024';
 
         if (username === adminUsername && password === adminPassword) {
             const token = btoa(JSON.stringify({ u: username, t: Date.now() }));
