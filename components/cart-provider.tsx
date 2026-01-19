@@ -1,0 +1,97 @@
+"use client";
+
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  type ReactNode,
+} from "react";
+
+export interface CartItem {
+  id: string;
+  platform: string;
+  service: string;
+  quantity: number;
+  price: number;
+  username: string;
+  link: string;
+}
+
+interface CartContextType {
+  items: CartItem[];
+  addItem: (item: CartItem) => void;
+  removeItem: (id: string) => void;
+  updateItem: (id: string, updates: Partial<CartItem>) => void;
+  clearCart: () => void;
+  total: number;
+  itemCount: number;
+}
+
+const CartContext = createContext<CartContextType | undefined>(undefined);
+
+export function CartProvider({ children }: { children: ReactNode }) {
+  const [items, setItems] = useState<CartItem[]>([]);
+
+  const addItem = useCallback((item: CartItem) => {
+    setItems((prev) => {
+      const existingIndex = prev.findIndex(
+        (i) =>
+          i.platform === item.platform &&
+          i.service === item.service &&
+          i.link === item.link
+      );
+      if (existingIndex > -1) {
+        const updated = [...prev];
+        updated[existingIndex] = {
+          ...updated[existingIndex],
+          quantity: updated[existingIndex].quantity + item.quantity,
+          price: updated[existingIndex].price + item.price,
+        };
+        return updated;
+      }
+      return [...prev, item];
+    });
+  }, []);
+
+  const removeItem = useCallback((id: string) => {
+    setItems((prev) => prev.filter((item) => item.id !== id));
+  }, []);
+
+  const updateItem = useCallback((id: string, updates: Partial<CartItem>) => {
+    setItems((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, ...updates } : item))
+    );
+  }, []);
+
+  const clearCart = useCallback(() => {
+    setItems([]);
+  }, []);
+
+  const total = items.reduce((sum, item) => sum + item.price, 0);
+  const itemCount = items.length;
+
+  return (
+    <CartContext.Provider
+      value={{
+        items,
+        addItem,
+        removeItem,
+        updateItem,
+        clearCart,
+        total,
+        itemCount,
+      }}
+    >
+      {children}
+    </CartContext.Provider>
+  );
+}
+
+export function useCart() {
+  const context = useContext(CartContext);
+  if (context === undefined) {
+    throw new Error("useCart must be used within a CartProvider");
+  }
+  return context;
+}
