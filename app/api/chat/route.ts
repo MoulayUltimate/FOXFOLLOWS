@@ -44,7 +44,18 @@ export async function POST(request: NextRequest) {
 
         let currentSessionId = sessionId;
 
-        // If no session ID, create a new session
+        // Check if session exists if ID provided
+        if (currentSessionId) {
+            const existingSession = await env.DB.prepare('SELECT id FROM chat_sessions WHERE id = ?')
+                .bind(currentSessionId)
+                .first();
+
+            if (!existingSession) {
+                currentSessionId = null; // Force creation of new session
+            }
+        }
+
+        // If no session ID or invalid, create a new session
         if (!currentSessionId) {
             currentSessionId = crypto.randomUUID();
             await env.DB.prepare(
