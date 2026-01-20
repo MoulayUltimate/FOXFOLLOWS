@@ -133,7 +133,7 @@ export function PackageSelector({
                   </span>
                 )}
                 {pkg.bestValue && (
-                  <span className="absolute -top-2 left-1/2 -translate-x-1/2 rounded-full bg-green-500 px-2 py-0.5 text-[10px] font-bold text-white">
+                  <span className="absolute -top-2 left-1/2 -translate-x-1/2 rounded-full bg-green-500 px-1.5 py-0.5 text-[9px] font-bold text-white">
                     BEST VALUE
                   </span>
                 )}

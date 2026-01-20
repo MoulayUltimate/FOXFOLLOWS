@@ -19,6 +19,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { StripeProvider } from "./stripe-provider";
+import { getPlatformIcon } from "@/components/platform-icons";
 
 export function CheckoutContent() {
   const { items, removeItem, total, clearCart } = useCart();
@@ -124,6 +125,9 @@ export function CheckoutContent() {
                   >
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
+                        <div className="text-primary">
+                          {getPlatformIcon(item.platform, "h-5 w-5")}
+                        </div>
                         <span className="font-medium text-foreground">
                           {item.platform}
                         </span>
