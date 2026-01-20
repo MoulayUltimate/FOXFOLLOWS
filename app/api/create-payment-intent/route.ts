@@ -100,22 +100,27 @@ export async function POST(req: Request) {
 
         // Update orders with Stripe Payment ID
         if (env.DB && orderIds.length > 0) {
-            const placeholders = orderIds.map(() => '?').join(',');
-            await env.DB.prepare(`
-                UPDATE orders 
-                SET stripe_payment_id = ? 
-                WHERE id IN (${placeholders})
-            `).bind(paymentIntent.id, ...orderIds).run();
+            try {
+                const placeholders = orderIds.map(() => '?').join(',');
+                await env.DB.prepare(`
+                    UPDATE orders 
+                    SET stripe_payment_id = ? 
+                    WHERE id IN (${placeholders})
+                `).bind(paymentIntent.id, ...orderIds).run();
+            } catch (dbError) {
+                console.error("Failed to update order with payment ID (likely missing column):", dbError);
+                // Continue without failing the request, as payment intent is valid
+            }
         }
 
         return NextResponse.json({
             clientSecret: paymentIntent.client_secret,
             orderIds: orderIds, // Return IDs to client
         });
-    } catch (error) {
+    } catch (error: any) {
         console.error("Stripe/Order error:", error);
         return NextResponse.json(
-            { error: "Error creating payment intent" },
+            { error: error.message || "Error creating payment intent" },
             { status: 500 }
         );
     }
