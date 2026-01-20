@@ -25,6 +25,7 @@ export function CheckoutContent() {
   const [email, setEmail] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderComplete, setOrderComplete] = useState(false);
+  const [createdOrderIds, setCreatedOrderIds] = useState<string[]>([]);
 
 
 
@@ -43,6 +44,18 @@ export function CheckoutContent() {
             <span className="font-medium text-foreground">{email}</span>. Your
             order will start processing within the next few minutes.
           </p>
+          {createdOrderIds.length > 0 && (
+            <div className="mt-6 rounded-lg bg-secondary/50 p-4">
+              <p className="text-sm font-medium text-muted-foreground mb-2">Order ID(s):</p>
+              <div className="flex flex-wrap justify-center gap-2">
+                {createdOrderIds.map(id => (
+                  <code key={id} className="bg-background px-2 py-1 rounded border border-border text-sm font-mono">
+                    {id}
+                  </code>
+                ))}
+              </div>
+            </div>
+          )}
           <div className="mt-8 space-y-4">
             <Button asChild className="w-full">
               <Link href="/">Continue Shopping</Link>
@@ -172,7 +185,8 @@ export function CheckoutContent() {
               {email ? (
                 <StripeProvider
                   email={email}
-                  onSuccess={() => {
+                  onSuccess={(ids) => {
+                    setCreatedOrderIds(ids);
                     setOrderComplete(true);
                     clearCart();
                   }}

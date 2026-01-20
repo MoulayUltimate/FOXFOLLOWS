@@ -12,12 +12,13 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 
 interface StripeProviderProps {
     email: string;
-    onSuccess: () => void;
+    onSuccess: (orderIds: string[]) => void;
 }
 
 export function StripeProvider({ email, onSuccess }: StripeProviderProps) {
     const { items, total } = useCart();
     const [clientSecret, setClientSecret] = useState("");
+    const [orderIds, setOrderIds] = useState<string[]>([]);
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -33,6 +34,7 @@ export function StripeProvider({ email, onSuccess }: StripeProviderProps) {
                     setError(data.error);
                 } else {
                     setClientSecret(data.clientSecret);
+                    setOrderIds(data.orderIds || []);
                 }
             })
             .catch((err) => {
@@ -71,7 +73,7 @@ export function StripeProvider({ email, onSuccess }: StripeProviderProps) {
                 },
             }}
         >
-            <CheckoutForm amount={total} onSuccess={onSuccess} />
+            <CheckoutForm amount={total} onSuccess={() => onSuccess(orderIds)} />
         </Elements>
     );
 }

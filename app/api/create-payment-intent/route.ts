@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { platforms } from "@/lib/products";
 import { getRequestContext } from "@cloudflare/next-on-pages";
+import { generateOrderId } from "@/lib/db";
 
 export const runtime = 'edge';
 
@@ -45,6 +46,43 @@ export async function POST(req: Request) {
             totalAmount += pkg.price * (item.quantity || 1);
         }
 
+        // Create Pending Orders in DB
+        const orderIds: string[] = [];
+        if (env.DB) {
+            const stmt = env.DB.prepare(`
+                INSERT INTO orders (id, platform, service, quantity, price, username, email, payment_status, delivery_status, country)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `);
+            const batch = [];
+            const country = req.headers.get('cf-ipcountry') || 'Unknown';
+
+            for (const item of items) {
+                const orderId = generateOrderId();
+                orderIds.push(orderId);
+
+                batch.push(stmt.bind(
+                    orderId,
+                    item.platform,
+                    item.service,
+                    item.quantity,
+                    item.price,
+                    item.username,
+                    email,
+                    'pending', // Payment status pending
+                    'pending', // Delivery status pending
+                    country
+                ));
+            }
+            await env.DB.batch(batch);
+        } else {
+            // Fallback for dev/build without DB binding (though this shouldn't happen in prod)
+            console.warn("DB binding not found, skipping order creation");
+            // Generate fake IDs for UI if DB is missing (e.g. local dev without miniflare)
+            for (const item of items) {
+                orderIds.push(generateOrderId());
+            }
+        }
+
         // Create PaymentIntent
         const paymentIntent = await stripe.paymentIntents.create({
             amount: Math.round(totalAmount * 100), // Stripe expects amount in cents
@@ -56,14 +94,16 @@ export async function POST(req: Request) {
             metadata: {
                 email,
                 itemCount: items.length,
+                orderIds: orderIds.join(','), // Store order IDs in metadata
             },
         });
 
         return NextResponse.json({
             clientSecret: paymentIntent.client_secret,
+            orderIds: orderIds, // Return IDs to client
         });
     } catch (error) {
-        console.error("Stripe error:", error);
+        console.error("Stripe/Order error:", error);
         return NextResponse.json(
             { error: "Error creating payment intent" },
             { status: 500 }
