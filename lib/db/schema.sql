@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS orders (
   payment_status TEXT DEFAULT 'pending' CHECK(payment_status IN ('pending', 'completed', 'failed', 'refunded')),
   delivery_status TEXT DEFAULT 'pending' CHECK(delivery_status IN ('pending', 'processing', 'completed', 'failed')),
   country TEXT,
+  stripe_payment_id TEXT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );

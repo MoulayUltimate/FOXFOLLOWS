@@ -12,6 +12,7 @@ export interface Order {
     payment_status: 'pending' | 'completed' | 'failed' | 'refunded';
     delivery_status: 'pending' | 'processing' | 'completed' | 'failed';
     country?: string;
+    stripe_payment_id?: string;
     created_at: string;
     updated_at: string;
 }

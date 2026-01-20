@@ -73,6 +73,9 @@ export function OrdersTable({ orders, onUpdateStatus, onDelete }: OrdersTablePro
                                 Payment
                             </th>
                             <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                                Transaction ID
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                                 Delivery
                             </th>
                             <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -118,6 +121,15 @@ export function OrdersTable({ orders, onUpdateStatus, onDelete }: OrdersTablePro
                                             <PaymentIcon className="h-3 w-3" />
                                             {paymentConfig.label}
                                         </span>
+                                    </td>
+                                    <td className="px-4 py-4 whitespace-nowrap">
+                                        {order.stripe_payment_id ? (
+                                            <span className="font-mono text-xs text-muted-foreground" title={order.stripe_payment_id}>
+                                                {order.stripe_payment_id.substring(0, 8)}...
+                                            </span>
+                                        ) : (
+                                            <span className="text-xs text-muted-foreground">-</span>
+                                        )}
                                     </td>
                                     <td className="px-4 py-4 whitespace-nowrap">
                                         <span className={cn("inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium", deliveryConfig.color)}>

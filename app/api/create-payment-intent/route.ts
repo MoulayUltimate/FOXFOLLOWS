@@ -20,7 +20,7 @@ export async function POST(req: Request) {
         }
 
         const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
-            apiVersion: "2025-01-27.acacia",
+            apiVersion: "2025-02-24.acacia",
         });
 
         if (!items || items.length === 0) {
@@ -97,6 +97,16 @@ export async function POST(req: Request) {
                 orderIds: orderIds.join(','), // Store order IDs in metadata
             },
         });
+
+        // Update orders with Stripe Payment ID
+        if (env.DB && orderIds.length > 0) {
+            const placeholders = orderIds.map(() => '?').join(',');
+            await env.DB.prepare(`
+                UPDATE orders 
+                SET stripe_payment_id = ? 
+                WHERE id IN (${placeholders})
+            `).bind(paymentIntent.id, ...orderIds).run();
+        }
 
         return NextResponse.json({
             clientSecret: paymentIntent.client_secret,
