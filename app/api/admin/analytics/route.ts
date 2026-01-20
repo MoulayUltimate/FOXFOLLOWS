@@ -81,18 +81,20 @@ export async function GET(request: NextRequest) {
             deviceBreakdown,
             activeCarts,
             checkingOut,
-            purchased
+            purchased,
+            trafficSources
         ] = await Promise.all([
             env.DB.prepare(`SELECT COUNT(*) as count FROM page_views WHERE 1=1 ${dateFilter}`).first(),
             env.DB.prepare(`SELECT COUNT(DISTINCT session_id) as count FROM page_views WHERE 1=1 ${dateFilter}`).first(),
             env.DB.prepare(`SELECT country, COUNT(*) as count FROM page_views WHERE country IS NOT NULL ${dateFilter} GROUP BY country ORDER BY count DESC LIMIT 10`).all(),
-            env.DB.prepare(`SELECT path, COUNT(*) as count FROM page_views WHERE 1=1 AND path NOT LIKE '/action/%' ${dateFilter} GROUP BY path ORDER BY count DESC LIMIT 10`).all(),
+            env.DB.prepare(`SELECT path, COUNT(*) as count FROM page_views WHERE 1=1 ${dateFilter} GROUP BY path ORDER BY count DESC LIMIT 10`).all(),
             env.DB.prepare(`SELECT DATE(created_at) as date, COUNT(*) as count FROM page_views WHERE 1=1 ${dateFilter} GROUP BY DATE(created_at) ORDER BY date`).all(),
             env.DB.prepare(`SELECT device_type as device, COUNT(*) as count FROM page_views WHERE device_type IS NOT NULL ${dateFilter} GROUP BY device_type`).all(),
             // Live activity queries
             env.DB.prepare(`SELECT COUNT(DISTINCT session_id) as count FROM page_views WHERE path = '/action/add-to-cart' AND created_at >= ?`).bind(tenMinsAgo).first(),
             env.DB.prepare(`SELECT COUNT(DISTINCT session_id) as count FROM page_views WHERE path = '/checkout' AND created_at >= ?`).bind(tenMinsAgo).first(),
             env.DB.prepare(`SELECT COUNT(*) as count FROM orders WHERE created_at >= ?`).bind(tenMinsAgo).first(),
+            env.DB.prepare(`SELECT referrer, COUNT(*) as count FROM page_views WHERE 1=1 ${dateFilter} AND referrer IS NOT NULL AND referrer != '' GROUP BY referrer ORDER BY count DESC LIMIT 10`).all(),
         ]);
 
         return NextResponse.json({
@@ -108,7 +110,8 @@ export async function GET(request: NextRequest) {
                     activeCarts: activeCarts?.count || 0,
                     checkingOut: checkingOut?.count || 0,
                     purchased: purchased?.count || 0,
-                }
+                },
+                trafficSources: trafficSources?.results || [],
             },
         });
     } catch (error) {

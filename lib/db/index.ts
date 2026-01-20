@@ -75,6 +75,7 @@ export interface AnalyticsSummary {
         checkingOut: number;
         purchased: number;
     };
+    trafficSources: { referrer: string; count: number }[];
 }
 
 export interface OrdersSummary {

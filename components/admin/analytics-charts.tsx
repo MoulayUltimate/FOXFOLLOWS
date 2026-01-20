@@ -18,6 +18,8 @@ import {
     BarChart,
     Bar,
 } from "recharts";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Globe } from "lucide-react";
 
 interface AnalyticsChartsProps {
     data: AnalyticsSummary;
@@ -240,7 +242,47 @@ export function AnalyticsCharts({ data }: AnalyticsChartsProps) {
                 <DeviceBreakdownChart data={data.deviceBreakdown} />
                 <TopPagesChart data={data.topPages} />
                 <TopCountriesList data={data.topCountries} />
+                <TrafficSourcesList data={data.trafficSources} />
             </div>
         </div>
+    );
+}
+
+function TrafficSourcesList({ data }: { data: { referrer: string; count: number }[] }) {
+    const getDomain = (url: string) => {
+        try {
+            const domain = new URL(url).hostname;
+            return domain.replace('www.', '');
+        } catch {
+            return url;
+        }
+    };
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle>Traffic Sources</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="space-y-4">
+                    {data.map((source) => (
+                        <div key={source.referrer} className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <div className="p-2 bg-primary/10 rounded-full">
+                                    <Globe className="h-4 w-4 text-primary" />
+                                </div>
+                                <span className="font-medium">{getDomain(source.referrer)}</span>
+                            </div>
+                            <span className="font-bold">{source.count}</span>
+                        </div>
+                    ))}
+                    {data.length === 0 && (
+                        <div className="text-center text-muted-foreground py-4">
+                            No traffic source data available
+                        </div>
+                    )}
+                </div>
+            </CardContent>
+        </Card>
     );
 }
