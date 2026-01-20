@@ -7,7 +7,7 @@ export const runtime = 'edge';
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { items, email } = body;
+        const { items, email, status } = body;
 
         if (!items || !Array.isArray(items) || items.length === 0) {
             return NextResponse.json({ error: 'No items in order' }, { status: 400 });
@@ -32,6 +32,7 @@ export async function POST(request: NextRequest) {
 
         // Get country from headers
         const country = request.headers.get('cf-ipcountry') || 'Unknown';
+        const initialStatus = status || 'pending';
 
         for (const item of items) {
             const orderId = generateOrderId();
@@ -45,7 +46,7 @@ export async function POST(request: NextRequest) {
                 item.price,
                 item.username,
                 email,
-                'completed', // Simulating completed payment for now
+                initialStatus,
                 'pending',
                 country
             ));

@@ -39,22 +39,37 @@ export function CheckoutContent() {
     setIsProcessing(true);
 
     try {
-      // Create order via API
+      // 1. Create order as PENDING first (simulates abandoned checkout if they drop off)
       const response = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           items,
           email,
+          status: 'pending' // Explicitly set as pending
         }),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to process order");
+        throw new Error("Failed to create order");
       }
 
-      // Simulate payment processing delay if needed
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const { orderIds } = await response.json();
+
+      // 2. Simulate payment processing delay
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      // 3. Update order to COMPLETED (simulating successful payment webhook)
+      // In a real app, this would happen via a Stripe webhook
+      await fetch("/api/orders/update-status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderIds,
+          status: 'completed',
+          paymentStatus: 'completed'
+        }),
+      });
 
       setOrderComplete(true);
       clearCart();
