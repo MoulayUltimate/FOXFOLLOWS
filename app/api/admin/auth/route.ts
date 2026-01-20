@@ -1,18 +1,10 @@
+import { NextResponse } from 'next/server';
+
 export const runtime = 'edge';
 
 export async function POST(request: Request) {
     try {
-        const text = await request.text();
-        let body;
-        try {
-            body = JSON.parse(text);
-        } catch (e) {
-            return new Response(JSON.stringify({ error: 'Invalid JSON' }), {
-                status: 400,
-                headers: { 'Content-Type': 'application/json' }
-            });
-        }
-
+        const body = await request.json();
         const { username, password } = body;
 
         // HARDCODED CREDENTIALS
@@ -22,50 +14,44 @@ export async function POST(request: Request) {
         if (username === adminUsername && password === adminPassword) {
             const token = btoa(JSON.stringify({ u: username, t: Date.now() }));
 
-            const response = new Response(JSON.stringify({ success: true, username }), {
-                status: 200,
-                headers: { 'Content-Type': 'application/json' }
+            const response = NextResponse.json({ success: true, username });
+            
+            response.cookies.set({
+                name: 'admin_token',
+                value: token,
+                path: '/',
+                httpOnly: true,
+                secure: true,
+                sameSite: 'lax',
+                maxAge: 86400
             });
-
-            response.headers.append(
-                'Set-Cookie',
-                `admin_token=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=86400`
-            );
 
             return response;
         }
 
-        return new Response(JSON.stringify({ error: 'Invalid credentials' }), {
-            status: 401,
-            headers: { 'Content-Type': 'application/json' }
-        });
+        return NextResponse.json(
+            { error: 'Invalid credentials' },
+            { status: 401 }
+        );
 
     } catch (error: any) {
-        return new Response(JSON.stringify({
-            error: 'Server Error',
-            details: error?.message || 'Unknown error'
-        }), {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' }
-        });
+        console.error('Login error:', error);
+        return NextResponse.json(
+            { 
+                error: 'Server Error', 
+                details: error instanceof Error ? error.message : 'Unknown error' 
+            },
+            { status: 500 }
+        );
     }
 }
 
 export async function GET(request: Request) {
-    return new Response(JSON.stringify({ authenticated: true }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' }
-    });
+    return NextResponse.json({ authenticated: true });
 }
 
 export async function DELETE(request: Request) {
-    const response = new Response(JSON.stringify({ success: true }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' }
-    });
-    response.headers.append(
-        'Set-Cookie',
-        `admin_token=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`
-    );
+    const response = NextResponse.json({ success: true });
+    response.cookies.delete('admin_token');
     return response;
 }
