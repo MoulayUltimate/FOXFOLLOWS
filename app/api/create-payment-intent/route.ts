@@ -54,7 +54,18 @@ export async function POST(req: Request) {
             }
             if (!pkg) continue;
 
-            totalAmount += pkg.price * (item.quantity || 1);
+            // Calculate number of packages (item.quantity is the total volume, e.g. 1000 followers)
+            // If item.quantity is 2000 and pkg.quantity is 1000, then count is 2.
+            const count = pkg.quantity > 0 ? (item.quantity / pkg.quantity) : 1;
+            totalAmount += pkg.price * count;
+        }
+
+        // Safeguard against massive totals
+        if (totalAmount > 10000) {
+            return NextResponse.json(
+                { error: "Order total exceeds limit ($10,000). Please contact support." },
+                { status: 400 }
+            );
         }
 
         if (totalAmount < 0.50) {
