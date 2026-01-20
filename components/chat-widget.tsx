@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MessageSquare, X, Send, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 interface Message {
     id: number;
@@ -13,20 +14,41 @@ interface Message {
     created_at: string;
 }
 
+const WELCOME_MESSAGES = [
+    "How can we help you today?",
+    "Hello! Need any assistance?",
+    "Welcome to FoxFollows Support!",
+    "Hi there! Ask us anything."
+];
+
 export function ChatWidget() {
     const [isOpen, setIsOpen] = useState(false);
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState<Message[]>([]);
     const [sessionId, setSessionId] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [name, setName] = useState("");
+    const [hasJoined, setHasJoined] = useState(false);
+    const [welcomeMessage, setWelcomeMessage] = useState("");
     const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    // Set random welcome message on mount
+    useEffect(() => {
+        setWelcomeMessage(WELCOME_MESSAGES[Math.floor(Math.random() * WELCOME_MESSAGES.length)]);
+    }, []);
 
     // Load session from local storage on mount
     useEffect(() => {
         const storedSession = localStorage.getItem("chat_session_id");
+        const storedName = localStorage.getItem("chat_user_name");
+
         if (storedSession) {
             setSessionId(storedSession);
+            setHasJoined(true);
             fetchMessages(storedSession);
+        }
+
+        if (storedName) {
+            setName(storedName);
         }
     }, []);
 
@@ -58,6 +80,14 @@ export function ChatWidget() {
         }
     };
 
+    const handleJoinChat = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!name.trim()) return;
+
+        localStorage.setItem("chat_user_name", name);
+        setHasJoined(true);
+    };
+
     const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!message.trim()) return;
@@ -81,6 +111,7 @@ export function ChatWidget() {
                 body: JSON.stringify({
                     sessionId,
                     message: newMessage,
+                    name: name,
                 }),
             });
 
@@ -104,12 +135,19 @@ export function ChatWidget() {
             <Button
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
-                    "fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-lg transition-all duration-300 hover:scale-105",
+                    "fixed bottom-6 right-6 z-50 h-16 w-16 rounded-full shadow-lg transition-all duration-300 hover:scale-105 p-0 overflow-hidden bg-white hover:bg-white/90 border-2 border-primary/20",
                     isOpen ? "rotate-90 scale-0 opacity-0" : "scale-100 opacity-100"
                 )}
                 size="icon"
             >
-                <MessageSquare className="h-6 w-6" />
+                <div className="relative h-full w-full p-2">
+                    <Image
+                        src="/fox-logo.png"
+                        alt="Chat"
+                        fill
+                        className="object-contain"
+                    />
+                </div>
             </Button>
 
             {/* Chat Window */}
@@ -123,14 +161,19 @@ export function ChatWidget() {
             >
                 {/* Header */}
                 <div className="flex items-center justify-between bg-primary px-4 py-3 text-primary-foreground">
-                    <div className="flex items-center gap-2">
-                        <div className="relative">
-                            <div className="h-2 w-2 rounded-full bg-green-400 absolute bottom-0 right-0 ring-2 ring-primary"></div>
-                            <User className="h-5 w-5" />
+                    <div className="flex items-center gap-3">
+                        <div className="relative h-10 w-10 bg-white rounded-full p-1">
+                            <Image
+                                src="/fox-logo.png"
+                                alt="FoxFollows"
+                                fill
+                                className="object-contain p-1"
+                            />
+                            <div className="h-2.5 w-2.5 rounded-full bg-green-500 absolute bottom-0 right-0 ring-2 ring-white"></div>
                         </div>
                         <div>
-                            <h3 className="font-semibold text-sm">Support Team</h3>
-                            <p className="text-xs opacity-90">We typically reply in minutes</p>
+                            <h3 className="font-semibold text-sm">FoxFollows Support</h3>
+                            <p className="text-xs opacity-90">Online</p>
                         </div>
                     </div>
                     <Button
@@ -143,53 +186,82 @@ export function ChatWidget() {
                     </Button>
                 </div>
 
-                {/* Messages Area */}
-                <div className="h-[400px] overflow-y-auto p-4 space-y-4 bg-secondary/30">
-                    {messages.length === 0 ? (
-                        <div className="flex h-full flex-col items-center justify-center text-center text-muted-foreground">
-                            <MessageSquare className="h-12 w-12 opacity-20 mb-2" />
-                            <p className="text-sm">Send us a message!</p>
-                            <p className="text-xs">We're here to help.</p>
-                        </div>
-                    ) : (
-                        messages.map((msg) => (
-                            <div
-                                key={msg.id}
-                                className={cn(
-                                    "flex w-full",
-                                    msg.sender === 'user' ? "justify-end" : "justify-start"
-                                )}
-                            >
-                                <div
-                                    className={cn(
-                                        "max-w-[80%] rounded-2xl px-4 py-2 text-sm",
-                                        msg.sender === 'user'
-                                            ? "bg-primary text-primary-foreground rounded-br-none"
-                                            : "bg-muted text-foreground rounded-bl-none"
-                                    )}
-                                >
-                                    {msg.message}
-                                </div>
+                {!hasJoined ? (
+                    <div className="p-6 space-y-6 bg-secondary/10 h-[400px] flex flex-col justify-center">
+                        <div className="text-center space-y-3">
+                            <div className="h-16 w-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <MessageSquare className="h-8 w-8 text-primary" />
                             </div>
-                        ))
-                    )}
-                    <div ref={messagesEndRef} />
-                </div>
-
-                {/* Input Area */}
-                <form onSubmit={handleSendMessage} className="border-t border-border p-3 bg-card">
-                    <div className="flex gap-2">
-                        <Input
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                            placeholder="Type a message..."
-                            className="flex-1"
-                        />
-                        <Button type="submit" size="icon" disabled={!message.trim()}>
-                            <Send className="h-4 w-4" />
-                        </Button>
+                            <h3 className="font-semibold text-xl">Welcome!</h3>
+                            <p className="text-sm text-muted-foreground">{welcomeMessage}</p>
+                            <p className="text-xs text-muted-foreground/80">Please enter your name to start chatting.</p>
+                        </div>
+                        <form onSubmit={handleJoinChat} className="space-y-4">
+                            <div className="space-y-2">
+                                <Input
+                                    placeholder="Your Name"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    required
+                                    className="text-center"
+                                />
+                            </div>
+                            <Button type="submit" className="w-full font-semibold">Start Chat</Button>
+                        </form>
                     </div>
-                </form>
+                ) : (
+                    <>
+                        {/* Messages Area */}
+                        <div className="h-[400px] overflow-y-auto p-4 space-y-4 bg-secondary/30">
+                            {messages.length === 0 ? (
+                                <div className="flex h-full flex-col items-center justify-center text-center text-muted-foreground space-y-2">
+                                    <div className="h-12 w-12 bg-primary/10 rounded-full flex items-center justify-center">
+                                        <MessageSquare className="h-6 w-6 text-primary opacity-50" />
+                                    </div>
+                                    <p className="text-sm font-medium">{welcomeMessage}</p>
+                                    <p className="text-xs opacity-70">We'll be with you shortly.</p>
+                                </div>
+                            ) : (
+                                messages.map((msg) => (
+                                    <div
+                                        key={msg.id}
+                                        className={cn(
+                                            "flex w-full",
+                                            msg.sender === 'user' ? "justify-end" : "justify-start"
+                                        )}
+                                    >
+                                        <div
+                                            className={cn(
+                                                "max-w-[80%] rounded-2xl px-4 py-2 text-sm shadow-sm",
+                                                msg.sender === 'user'
+                                                    ? "bg-primary text-primary-foreground rounded-br-none"
+                                                    : "bg-card border border-border text-foreground rounded-bl-none"
+                                            )}
+                                        >
+                                            {msg.message}
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                            <div ref={messagesEndRef} />
+                        </div>
+
+                        {/* Input Area */}
+                        <form onSubmit={handleSendMessage} className="border-t border-border p-3 bg-card">
+                            <div className="flex gap-2">
+                                <Input
+                                    value={message}
+                                    onChange={(e) => setMessage(e.target.value)}
+                                    placeholder="Type a message..."
+                                    className="flex-1"
+                                />
+                                <Button type="submit" size="icon" disabled={!message.trim()}>
+                                    <Send className="h-4 w-4" />
+                                </Button>
+                            </div>
+                        </form>
+                    </>
+                )}
             </div>
         </>
     );
