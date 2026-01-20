@@ -90,7 +90,7 @@ export async function GET(request: NextRequest) {
             env.DB.prepare(`SELECT DATE(created_at) as date, COUNT(*) as count FROM page_views WHERE 1=1 ${dateFilter} GROUP BY DATE(created_at) ORDER BY date`).all(),
             env.DB.prepare(`SELECT device_type as device, COUNT(*) as count FROM page_views WHERE device_type IS NOT NULL ${dateFilter} GROUP BY device_type`).all(),
             // Live activity queries
-            env.DB.prepare(`SELECT COUNT(DISTINCT session_id) as count FROM page_views WHERE path != '/checkout' AND created_at >= ?`).bind(fiveMinsAgo).first(),
+            env.DB.prepare(`SELECT COUNT(DISTINCT session_id) as count FROM page_views WHERE path = '/action/add-to-cart' AND created_at >= ?`).bind(fiveMinsAgo).first(),
             env.DB.prepare(`SELECT COUNT(DISTINCT session_id) as count FROM page_views WHERE path = '/checkout' AND created_at >= ?`).bind(fiveMinsAgo).first(),
             env.DB.prepare(`SELECT COUNT(*) as count FROM orders WHERE created_at >= ?`).bind(fiveMinsAgo).first(),
         ]);

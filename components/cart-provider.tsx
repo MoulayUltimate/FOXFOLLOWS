@@ -55,6 +55,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [items]);
 
   const addItem = useCallback((item: CartItem) => {
+    // Track add to cart event
+    fetch("/api/track", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path: "/action/add-to-cart" }),
+    }).catch((err) => console.error("Tracking failed", err));
+
     setItems((prev) => {
       const existingIndex = prev.findIndex(
         (i) =>

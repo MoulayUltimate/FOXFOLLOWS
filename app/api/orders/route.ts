@@ -34,6 +34,7 @@ export async function POST(request: NextRequest) {
         const country = request.headers.get('cf-ipcountry') || 'Unknown';
         const initialStatus = status || 'pending';
 
+        // Create one order per item (line-item based orders)
         for (const item of items) {
             const orderId = generateOrderId();
             orders.push(orderId);
