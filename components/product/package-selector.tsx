@@ -29,7 +29,7 @@ export function PackageSelector({
 
   const [selectedService, setSelectedService] = useState<Service>(
     platform.services.find((s) => s.id === initialService) ||
-      platform.services[0]
+    platform.services[0]
   );
   const [selectedPackage, setSelectedPackage] = useState<Package>(
     selectedService.packages.find((p) => p.popular) || selectedService.packages[2]
@@ -76,6 +76,9 @@ export function PackageSelector({
       price: selectedPackage.price,
       username: username.trim(),
       link: username.trim(),
+      platformId: platform.id,
+      serviceId: selectedService.id,
+      packageId: selectedPackage.id,
     });
 
     toast.success(`Added ${formatQuantity(selectedPackage.quantity)} ${selectedService.name} to cart`);

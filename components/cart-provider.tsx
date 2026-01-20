@@ -16,6 +16,9 @@ export interface CartItem {
   price: number;
   username: string;
   link: string;
+  platformId?: string;
+  serviceId?: string;
+  packageId?: string;
 }
 
 interface CartContextType {

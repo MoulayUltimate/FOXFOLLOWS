@@ -18,6 +18,7 @@ import {
   ArrowLeft,
   CheckCircle,
 } from "lucide-react";
+import { StripeProvider } from "./stripe-provider";
 
 export function CheckoutContent() {
   const { items, removeItem, total, clearCart } = useCart();
@@ -25,61 +26,7 @@ export function CheckoutContent() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderComplete, setOrderComplete] = useState(false);
 
-  const handleCheckout = async () => {
-    if (!email.trim()) {
-      toast.error("Please enter your email address");
-      return;
-    }
 
-    if (items.length === 0) {
-      toast.error("Your cart is empty");
-      return;
-    }
-
-    setIsProcessing(true);
-
-    try {
-      // 1. Create order as PENDING first (simulates abandoned checkout if they drop off)
-      const response = await fetch("/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          items,
-          email,
-          status: 'pending' // Explicitly set as pending
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to create order");
-      }
-
-      const { orderIds } = await response.json();
-
-      // 2. Simulate payment processing delay
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // 3. Update order to COMPLETED (simulating successful payment webhook)
-      // In a real app, this would happen via a Stripe webhook
-      await fetch("/api/orders/update-status", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          orderIds,
-          status: 'completed',
-          paymentStatus: 'completed'
-        }),
-      });
-
-      setOrderComplete(true);
-      clearCart();
-    } catch (error) {
-      console.error("Checkout error:", error);
-      toast.error("Failed to process order. Please try again.");
-    } finally {
-      setIsProcessing(false);
-    }
-  };
 
   if (orderComplete) {
     return (
@@ -222,15 +169,21 @@ export function CheckoutContent() {
                 <CreditCard className="h-5 w-5" />
                 Payment Method
               </h2>
-              <div className="rounded-lg border border-dashed border-border bg-secondary/30 p-6 text-center">
-                <Lock className="mx-auto h-8 w-8 text-muted-foreground" />
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Secure payment powered by Stripe
-                </p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Connect Stripe integration to enable payments
-                </p>
-              </div>
+              {email ? (
+                <StripeProvider
+                  email={email}
+                  onSuccess={() => {
+                    setOrderComplete(true);
+                    clearCart();
+                  }}
+                />
+              ) : (
+                <div className="rounded-lg border border-dashed border-border bg-secondary/30 p-6 text-center">
+                  <p className="text-sm text-muted-foreground">
+                    Please enter your email address above to proceed with payment.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -271,21 +224,7 @@ export function CheckoutContent() {
                 <span className="text-primary">${total.toFixed(2)}</span>
               </div>
 
-              <Button
-                onClick={handleCheckout}
-                disabled={isProcessing}
-                className="w-full gap-2"
-                size="lg"
-              >
-                {isProcessing ? (
-                  <>Processing...</>
-                ) : (
-                  <>
-                    <Lock className="h-4 w-4" />
-                    Complete Order
-                  </>
-                )}
-              </Button>
+
 
               {/* Trust Badges */}
               <div className="mt-6 flex items-center justify-center gap-4 border-t border-border pt-6">
