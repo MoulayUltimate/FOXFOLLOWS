@@ -50,6 +50,27 @@ CREATE TABLE IF NOT EXISTS admin_users (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Chat Sessions
+CREATE TABLE IF NOT EXISTS chat_sessions (
+  id TEXT PRIMARY KEY,
+  user_name TEXT,
+  user_email TEXT,
+  status TEXT DEFAULT 'active' CHECK(status IN ('active', 'closed')),
+  last_message_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Chat Messages
+CREATE TABLE IF NOT EXISTS chat_messages (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  session_id TEXT NOT NULL,
+  sender TEXT NOT NULL CHECK(sender IN ('user', 'admin')),
+  message TEXT NOT NULL,
+  is_read INTEGER DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(session_id) REFERENCES chat_sessions(id) ON DELETE CASCADE
+);
+
 -- Create indexes for better query performance
 CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders(created_at);
 CREATE INDEX IF NOT EXISTS idx_orders_payment_status ON orders(payment_status);
@@ -59,6 +80,9 @@ CREATE INDEX IF NOT EXISTS idx_page_views_path ON page_views(path);
 CREATE INDEX IF NOT EXISTS idx_page_views_created_at ON page_views(created_at);
 CREATE INDEX IF NOT EXISTS idx_page_views_country ON page_views(country);
 CREATE INDEX IF NOT EXISTS idx_page_views_session_id ON page_views(session_id);
+CREATE INDEX IF NOT EXISTS idx_chat_sessions_status ON chat_sessions(status);
+CREATE INDEX IF NOT EXISTS idx_chat_sessions_last_message ON chat_sessions(last_message_at);
+CREATE INDEX IF NOT EXISTS idx_chat_messages_session_id ON chat_messages(session_id);
 
 -- Products table for dynamic pricing
 CREATE TABLE IF NOT EXISTS products (

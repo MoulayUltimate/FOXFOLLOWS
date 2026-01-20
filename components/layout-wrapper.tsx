@@ -7,6 +7,7 @@ import { CartProvider } from "@/components/cart-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { SalesPopup } from "@/components/ui/sales-popup";
 import { AnalyticsTracker } from "@/components/analytics-tracker";
+import { ChatWidget } from "@/components/chat-widget";
 
 export function LayoutWrapper({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -31,6 +32,7 @@ export function LayoutWrapper({ children }: { children: React.ReactNode }) {
             <Toaster />
             <SalesPopup />
             <AnalyticsTracker />
+            <ChatWidget />
         </CartProvider>
     );
 }

@@ -23,6 +23,7 @@ const navItems = [
     { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
     { href: "/admin/products", label: "Products", icon: Package },
     { href: "/admin/messages", label: "Messages", icon: MessageSquare },
+    { href: "/admin/chat", label: "Live Chat", icon: MessageSquare },
     { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
 ];
 
