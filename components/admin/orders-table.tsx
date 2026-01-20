@@ -64,7 +64,10 @@ export function OrdersTable({ orders, onUpdateStatus, onDelete }: OrdersTablePro
                                 Price
                             </th>
                             <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                                Username
+                                Username / URL
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                                Email
                             </th>
                             <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                                 Payment
@@ -104,8 +107,11 @@ export function OrdersTable({ orders, onUpdateStatus, onDelete }: OrdersTablePro
                                     <td className="px-4 py-4 whitespace-nowrap font-medium">
                                         ${order.price.toFixed(2)}
                                     </td>
-                                    <td className="px-4 py-4 whitespace-nowrap text-muted-foreground">
+                                    <td className="px-4 py-4 whitespace-nowrap text-muted-foreground max-w-[150px] truncate" title={order.username}>
                                         {order.username}
+                                    </td>
+                                    <td className="px-4 py-4 whitespace-nowrap text-muted-foreground">
+                                        {order.email || "-"}
                                     </td>
                                     <td className="px-4 py-4 whitespace-nowrap">
                                         <span className={cn("inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium", paymentConfig.color)}>
