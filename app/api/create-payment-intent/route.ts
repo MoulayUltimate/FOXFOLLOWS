@@ -34,16 +34,34 @@ export async function POST(req: Request) {
         let totalAmount = 0;
 
         for (const item of items) {
-            const platform = platforms.find(p => p.id === item.platformId);
+            // Try ID match first, then fallback to name match (for legacy carts)
+            let platform = platforms.find(p => p.id === item.platformId);
+            if (!platform) {
+                platform = platforms.find(p => p.name === item.platform);
+            }
             if (!platform) continue;
 
-            const service = platform.services.find(s => s.id === item.serviceId);
+            let service = platform.services.find(s => s.id === item.serviceId);
+            if (!service) {
+                service = platform.services.find(s => s.name === item.service);
+            }
             if (!service) continue;
 
-            const pkg = service.packages.find(p => p.id === item.packageId);
+            let pkg = service.packages.find(p => p.id === item.packageId);
+            if (!pkg) {
+                // Try to match by price and quantity if package ID is missing
+                pkg = service.packages.find(p => p.price === item.price && p.quantity === item.quantity);
+            }
             if (!pkg) continue;
 
             totalAmount += pkg.price * (item.quantity || 1);
+        }
+
+        if (totalAmount < 0.50) {
+            return NextResponse.json(
+                { error: "Order total must be at least $0.50" },
+                { status: 400 }
+            );
         }
 
         // Create Pending Orders in DB
