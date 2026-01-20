@@ -38,13 +38,32 @@ export function CheckoutContent() {
 
     setIsProcessing(true);
 
-    // Simulate payment processing
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      // Create order via API
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items,
+          email,
+        }),
+      });
 
-    // In production, this would integrate with Stripe
-    setOrderComplete(true);
-    clearCart();
-    setIsProcessing(false);
+      if (!response.ok) {
+        throw new Error("Failed to process order");
+      }
+
+      // Simulate payment processing delay if needed
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      setOrderComplete(true);
+      clearCart();
+    } catch (error) {
+      console.error("Checkout error:", error);
+      toast.error("Failed to process order. Please try again.");
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   if (orderComplete) {
