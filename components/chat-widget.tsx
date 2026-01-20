@@ -187,14 +187,14 @@ export function ChatWidget() {
                 {/* Header */}
                 <div className="flex items-center justify-between bg-primary px-4 py-3 text-primary-foreground">
                     <div className="flex items-center gap-3">
-                        <div className="relative h-10 w-10 shrink-0 bg-white rounded-full p-1">
+                        <div className="relative h-10 w-10 shrink-0 bg-white rounded-full p-1 overflow-hidden">
                             <Image
                                 src="/fox-logo.png"
                                 alt="FoxFollows"
                                 fill
                                 className="object-contain p-1"
                             />
-                            <div className="h-2.5 w-2.5 rounded-full bg-green-500 absolute bottom-0 right-0 ring-2 ring-white"></div>
+                            <div className="h-2.5 w-2.5 rounded-full bg-green-500 absolute bottom-0 right-0 ring-2 ring-white z-10"></div>
                         </div>
                         <div className="flex flex-col justify-center text-left">
                             <h3 className="font-semibold text-sm leading-tight">FoxFollows Support</h3>
