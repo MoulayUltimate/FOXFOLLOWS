@@ -126,16 +126,33 @@ export default function AdminDashboard() {
                         Welcome back! Here's an overview of your business.
                     </p>
                 </div>
-                <Button onClick={handleSeed} disabled={seeding}>
-                    {seeding ? (
-                        <>
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                            Seeding...
-                        </>
-                    ) : (
-                        "Seed Sample Data"
-                    )}
-                </Button>
+                <div className="flex gap-2">
+                    <Button variant="destructive" onClick={async () => {
+                        if (!confirm("Are you sure? This will delete ALL orders, messages, and analytics data.")) return;
+
+                        try {
+                            const res = await fetch("/api/admin/reset", { method: "DELETE" });
+                            if (!res.ok) throw new Error("Failed to reset");
+                            alert("Data reset successfully!");
+                            fetchData();
+                        } catch (error) {
+                            console.error(error);
+                            alert("Failed to reset data");
+                        }
+                    }}>
+                        Reset Data
+                    </Button>
+                    <Button onClick={handleSeed} disabled={seeding}>
+                        {seeding ? (
+                            <>
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                Seeding...
+                            </>
+                        ) : (
+                            "Seed Sample Data"
+                        )}
+                    </Button>
+                </div>
             </div>
 
             {/* Stats Cards */}

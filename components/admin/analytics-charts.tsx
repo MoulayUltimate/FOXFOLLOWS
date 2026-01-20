@@ -1,6 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { AnalyticsSummary } from "@/lib/db";
+import { Button } from "@/components/ui/button";
+import { ActivityFunnel } from "@/components/admin/activity-funnel";
 import {
     LineChart,
     Line,
@@ -32,12 +35,73 @@ const getCountryFlag = (code: string) => {
 };
 
 export function PageViewsChart({ data }: { data: { date: string; count: number }[] }) {
+    const [timeRange, setTimeRange] = useState<"today" | "7d" | "30d" | "all">("7d");
+
+    const filteredData = data.filter((item) => {
+        const itemDate = new Date(item.date);
+        const now = new Date();
+
+        if (timeRange === "today") {
+            return itemDate.toDateString() === now.toDateString();
+        }
+
+        if (timeRange === "7d") {
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(now.getDate() - 7);
+            return itemDate >= sevenDaysAgo;
+        }
+
+        if (timeRange === "30d") {
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(now.getDate() - 30);
+            return itemDate >= thirtyDaysAgo;
+        }
+
+        return true;
+    });
+
     return (
         <div className="rounded-xl border border-border bg-card p-6">
-            <h3 className="font-semibold mb-4">Page Views Over Time</h3>
+            <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold">Page Views Over Time</h3>
+                <div className="flex gap-1">
+                    <Button
+                        variant={timeRange === "today" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setTimeRange("today")}
+                        className="h-7 text-xs px-2"
+                    >
+                        Today
+                    </Button>
+                    <Button
+                        variant={timeRange === "7d" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setTimeRange("7d")}
+                        className="h-7 text-xs px-2"
+                    >
+                        7 Days
+                    </Button>
+                    <Button
+                        variant={timeRange === "30d" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setTimeRange("30d")}
+                        className="h-7 text-xs px-2"
+                    >
+                        30 Days
+                    </Button>
+                    <Button
+                        variant={timeRange === "all" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setTimeRange("all")}
+                        className="h-7 text-xs px-2"
+                    >
+                        All Time
+                    </Button>
+                </div>
+            </div>
             <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={data}>
+                    <LineChart data={filteredData}>
                         <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                         <XAxis
                             dataKey="date"
@@ -169,11 +233,14 @@ export function TopCountriesList({ data }: { data: { country: string; count: num
 
 export function AnalyticsCharts({ data }: AnalyticsChartsProps) {
     return (
-        <div className="grid gap-6 md:grid-cols-2">
-            <PageViewsChart data={data.viewsByDay} />
-            <DeviceBreakdownChart data={data.deviceBreakdown} />
-            <TopPagesChart data={data.topPages} />
-            <TopCountriesList data={data.topCountries} />
+        <div className="space-y-6">
+            {data.liveActivity && <ActivityFunnel data={data.liveActivity} />}
+            <div className="grid gap-6 md:grid-cols-2">
+                <PageViewsChart data={data.viewsByDay} />
+                <DeviceBreakdownChart data={data.deviceBreakdown} />
+                <TopPagesChart data={data.topPages} />
+                <TopCountriesList data={data.topCountries} />
+            </div>
         </div>
     );
 }

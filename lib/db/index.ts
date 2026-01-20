@@ -70,6 +70,11 @@ export interface AnalyticsSummary {
     topPages: { path: string; count: number }[];
     viewsByDay: { date: string; count: number }[];
     deviceBreakdown: { device: string; count: number }[];
+    liveActivity: {
+        activeCarts: number;
+        checkingOut: number;
+        purchased: number;
+    };
 }
 
 export interface OrdersSummary {

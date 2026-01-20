@@ -68,6 +68,9 @@ export async function GET(request: NextRequest) {
             dateFilter = `AND created_at >= '${monthAgo.toISOString()}'`;
         }
 
+        // Calculate live activity (last 5 mins)
+        const fiveMinsAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+
         // Fetch analytics data
         const [
             totalViews,
@@ -76,6 +79,9 @@ export async function GET(request: NextRequest) {
             topPages,
             viewsByDay,
             deviceBreakdown,
+            activeCarts,
+            checkingOut,
+            purchased
         ] = await Promise.all([
             env.DB.prepare(`SELECT COUNT(*) as count FROM page_views WHERE 1=1 ${dateFilter}`).first(),
             env.DB.prepare(`SELECT COUNT(DISTINCT session_id) as count FROM page_views WHERE 1=1 ${dateFilter}`).first(),
@@ -83,6 +89,10 @@ export async function GET(request: NextRequest) {
             env.DB.prepare(`SELECT path, COUNT(*) as count FROM page_views WHERE 1=1 ${dateFilter} GROUP BY path ORDER BY count DESC LIMIT 10`).all(),
             env.DB.prepare(`SELECT DATE(created_at) as date, COUNT(*) as count FROM page_views WHERE 1=1 ${dateFilter} GROUP BY DATE(created_at) ORDER BY date`).all(),
             env.DB.prepare(`SELECT device_type as device, COUNT(*) as count FROM page_views WHERE device_type IS NOT NULL ${dateFilter} GROUP BY device_type`).all(),
+            // Live activity queries
+            env.DB.prepare(`SELECT COUNT(DISTINCT session_id) as count FROM page_views WHERE path != '/checkout' AND created_at >= ?`).bind(fiveMinsAgo).first(),
+            env.DB.prepare(`SELECT COUNT(DISTINCT session_id) as count FROM page_views WHERE path = '/checkout' AND created_at >= ?`).bind(fiveMinsAgo).first(),
+            env.DB.prepare(`SELECT COUNT(*) as count FROM orders WHERE created_at >= ?`).bind(fiveMinsAgo).first(),
         ]);
 
         return NextResponse.json({
@@ -94,6 +104,11 @@ export async function GET(request: NextRequest) {
                 topPages: topPages?.results || [],
                 viewsByDay: viewsByDay?.results || [],
                 deviceBreakdown: deviceBreakdown?.results || [],
+                liveActivity: {
+                    activeCarts: activeCarts?.count || 0,
+                    checkingOut: checkingOut?.count || 0,
+                    purchased: purchased?.count || 0,
+                }
             },
         });
     } catch (error) {
