@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MessageSquare, X, Send, User } from "lucide-react";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
+import { FoxLogo } from "@/components/fox-logo";
 
 interface Message {
     id: number;
@@ -187,13 +187,8 @@ export function ChatWidget() {
                 {/* Header */}
                 <div className="flex items-center justify-between bg-primary px-4 py-3 text-primary-foreground">
                     <div className="flex items-center gap-3">
-                        <div className="relative h-10 w-10 shrink-0 bg-white rounded-full p-1 overflow-hidden">
-                            <Image
-                                src="/fox-logo.png"
-                                alt="FoxFollows"
-                                fill
-                                className="object-contain p-1"
-                            />
+                        <div className="relative h-10 w-10 shrink-0 bg-white rounded-full p-1 overflow-hidden flex items-center justify-center">
+                            <FoxLogo className="h-full w-full p-1" />
                             <div className="h-2.5 w-2.5 rounded-full bg-green-500 absolute bottom-0 right-0 ring-2 ring-white z-10"></div>
                         </div>
                         <div className="flex flex-col justify-center text-left">
