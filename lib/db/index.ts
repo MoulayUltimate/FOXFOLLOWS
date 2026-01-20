@@ -46,6 +46,21 @@ export interface AdminUser {
     created_at: string;
 }
 
+export interface Product {
+    id: string;
+    platform: string;
+    service: string;
+    name: string;
+    quantity: number;
+    price: number;
+    original_price?: number;
+    is_popular: number;
+    is_best_value: number;
+    active: number;
+    created_at?: string;
+    updated_at?: string;
+}
+
 // Analytics summary types
 export interface AnalyticsSummary {
     totalPageViews: number;

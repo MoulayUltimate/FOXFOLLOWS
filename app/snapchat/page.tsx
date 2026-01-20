@@ -1,10 +1,11 @@
 import { Suspense } from "react";
-
-
 import { Metadata } from "next";
 import { PlatformPage } from "@/components/product/platform-page";
-import { getPlatform } from "@/lib/products";
+import { getPlatformFromDB } from "@/lib/products-db";
 import { notFound } from "next/navigation";
+import { getRequestContext } from "@cloudflare/next-on-pages";
+
+export const runtime = 'edge';
 
 export const metadata: Metadata = {
   title: "Buy Snapchat Followers & Story Views | FoxFollows",
@@ -14,8 +15,17 @@ export const metadata: Metadata = {
     "buy snapchat followers, buy snapchat views, snapchat growth",
 };
 
-export default function SnapchatPage() {
-  const platform = getPlatform("snapchat");
+export default async function SnapchatPage() {
+  const env = getRequestContext().env as any;
+  let platform;
+
+  if (env?.DB) {
+    platform = await getPlatformFromDB("snapchat", env.DB);
+  } else {
+    const { getPlatform } = await import("@/lib/products");
+    platform = getPlatform("snapchat");
+  }
+
   if (!platform) notFound();
 
   return (
