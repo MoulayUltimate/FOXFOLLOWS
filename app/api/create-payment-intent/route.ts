@@ -75,43 +75,6 @@ export async function POST(req: Request) {
             );
         }
 
-        // Create Pending Orders in DB
-        const orderIds: string[] = [];
-        if (env.DB) {
-            const stmt = env.DB.prepare(`
-                INSERT INTO orders (id, platform, service, quantity, price, username, email, payment_status, delivery_status, country)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `);
-            const batch = [];
-            const country = req.headers.get('cf-ipcountry') || 'Unknown';
-
-            for (const item of items) {
-                const orderId = generateOrderId();
-                orderIds.push(orderId);
-
-                batch.push(stmt.bind(
-                    orderId,
-                    item.platform,
-                    item.service,
-                    item.quantity,
-                    item.price,
-                    item.username,
-                    email,
-                    'pending', // Payment status pending
-                    'pending', // Delivery status pending
-                    country
-                ));
-            }
-            await env.DB.batch(batch);
-        } else {
-            // Fallback for dev/build without DB binding (though this shouldn't happen in prod)
-            console.warn("DB binding not found, skipping order creation");
-            // Generate fake IDs for UI if DB is missing (e.g. local dev without miniflare)
-            for (const item of items) {
-                orderIds.push(generateOrderId());
-            }
-        }
-
         // Create PaymentIntent
         const paymentIntent = await stripe.paymentIntents.create({
             amount: Math.round(totalAmount * 100), // Stripe expects amount in cents
@@ -123,28 +86,11 @@ export async function POST(req: Request) {
             metadata: {
                 email,
                 itemCount: items.length,
-                orderIds: orderIds.join(','), // Store order IDs in metadata
             },
         });
 
-        // Update orders with Stripe Payment ID
-        if (env.DB && orderIds.length > 0) {
-            try {
-                const placeholders = orderIds.map(() => '?').join(',');
-                await env.DB.prepare(`
-                    UPDATE orders 
-                    SET stripe_payment_id = ? 
-                    WHERE id IN (${placeholders})
-                `).bind(paymentIntent.id, ...orderIds).run();
-            } catch (dbError) {
-                console.error("Failed to update order with payment ID (likely missing column):", dbError);
-                // Continue without failing the request, as payment intent is valid
-            }
-        }
-
         return NextResponse.json({
             clientSecret: paymentIntent.client_secret,
-            orderIds: orderIds, // Return IDs to client
         });
     } catch (error: any) {
         console.error("Stripe/Order error:", error);

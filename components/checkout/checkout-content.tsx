@@ -185,8 +185,24 @@ export function CheckoutContent() {
               {email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? (
                 <StripeProvider
                   email={email}
-                  onSuccess={(ids) => {
-                    setCreatedOrderIds(ids);
+                  onSuccess={async () => {
+                    try {
+                      const res = await fetch("/api/orders", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          items,
+                          email,
+                          status: "completed",
+                        }),
+                      });
+                      const data = await res.json();
+                      if (data.success) {
+                        setCreatedOrderIds(data.orderIds);
+                      }
+                    } catch (err) {
+                      console.error("Failed to create order", err);
+                    }
                     setOrderComplete(true);
                     clearCart();
                   }}

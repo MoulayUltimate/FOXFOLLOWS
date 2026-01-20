@@ -34,7 +34,6 @@ export function StripeProvider({ email, onSuccess }: StripeProviderProps) {
                     setError(data.error);
                 } else {
                     setClientSecret(data.clientSecret);
-                    setOrderIds(data.orderIds || []);
                     setError("");
                 }
             })
