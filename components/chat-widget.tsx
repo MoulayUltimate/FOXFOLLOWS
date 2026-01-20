@@ -167,20 +167,12 @@ export function ChatWidget() {
                     setShowBubble(false);
                 }}
                 className={cn(
-                    "fixed bottom-6 right-6 z-50 h-20 w-20 rounded-full shadow-none transition-all duration-300 hover:scale-110 p-0 bg-transparent hover:bg-transparent",
+                    "fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-lg transition-all duration-300 hover:scale-105",
                     isOpen ? "rotate-90 scale-0 opacity-0" : "scale-100 opacity-100"
                 )}
                 size="icon"
             >
-                <div className="relative h-full w-full drop-shadow-2xl filter">
-                    <Image
-                        src="/fox-logo.png"
-                        alt="Chat"
-                        fill
-                        className="object-contain"
-                        priority
-                    />
-                </div>
+                <MessageSquare className="h-6 w-6" />
             </Button>
 
             {/* Chat Window */}
