@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getRequestContext } from '@cloudflare/next-on-pages';
 
 export const runtime = 'edge';
 
@@ -15,7 +16,7 @@ export async function GET(request: NextRequest) {
         const period = searchParams.get('period') || '7d'; // 7d, 30d, all
 
         // Get D1 binding from env
-        const env = (request as any).env;
+        const env = getRequestContext().env as any;
 
         if (!env?.DB) {
             // Return mock data for development

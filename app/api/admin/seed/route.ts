@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateOrderId } from '@/lib/db';
+import { getRequestContext } from '@cloudflare/next-on-pages';
 
 export const runtime = 'edge';
 
@@ -10,7 +11,7 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const env = (request as any).env;
+        const env = getRequestContext().env as any;
         if (!env?.DB) {
             return NextResponse.json({ error: 'Database binding not found' }, { status: 500 });
         }

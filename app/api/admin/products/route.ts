@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { platforms } from '@/lib/products';
+import { getRequestContext } from '@cloudflare/next-on-pages';
 
 export const runtime = 'edge';
 
@@ -11,7 +12,7 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const env = (request as any).env;
+        const env = getRequestContext().env as any;
         if (!env?.DB) {
             // Fallback to static data if no DB
             return NextResponse.json({
