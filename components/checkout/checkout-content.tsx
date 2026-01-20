@@ -109,7 +109,7 @@ export function CheckoutContent() {
         <h1 className="mb-8 text-3xl font-bold text-foreground">Checkout</h1>
 
         <div className="grid gap-8 lg:grid-cols-2">
-          {/* Left Column - Cart Items & Payment */}
+          {/* Left Column - Cart Items, Contact & Summary */}
           <div className="space-y-6">
             {/* Cart Items */}
             <div className="rounded-2xl border border-border bg-card p-6">
@@ -180,8 +180,69 @@ export function CheckoutContent() {
               </div>
             </div>
 
-            {/* Payment Method */}
+            {/* Order Summary (Moved to Left) */}
             <div className="rounded-2xl border border-border bg-card p-6">
+              <h2 className="mb-4 text-lg font-semibold text-foreground">
+                Order Summary
+              </h2>
+
+              <div className="space-y-3 border-b border-border pb-4">
+                {items.map((item) => (
+                  <div key={item.id} className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">
+                      {formatQuantity(item.quantity)} {item.platform}{" "}
+                      {item.service}
+                    </span>
+                    <span className="text-foreground">
+                      ${item.price.toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="space-y-2 border-b border-border py-4">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Subtotal</span>
+                  <span className="text-foreground">${total.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Processing Fee</span>
+                  <span className="text-green-500">FREE</span>
+                </div>
+              </div>
+
+              <div className="flex justify-between py-4 text-lg font-bold">
+                <span className="text-foreground">Total</span>
+                <span className="text-primary">${total.toFixed(2)}</span>
+              </div>
+
+              {/* Trust Badges */}
+              <div className="mt-6 flex items-center justify-center gap-4 border-t border-border pt-6">
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <Shield className="h-4 w-4 text-green-500" />
+                  Secure Checkout
+                </div>
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <Lock className="h-4 w-4 text-blue-500" />
+                  SSL Encrypted
+                </div>
+              </div>
+
+              {/* Money Back Guarantee */}
+              <div className="mt-4 rounded-lg bg-green-500/10 p-4 text-center">
+                <p className="text-sm font-medium text-green-700">
+                  100% Money Back Guarantee
+                </p>
+                <p className="mt-1 text-xs text-green-600">
+                  If we don&apos;t deliver, you get a full refund
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Payment Method */}
+          <div>
+            <div className="sticky top-24 rounded-2xl border border-border bg-card p-6">
               <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-foreground">
                 <CreditCard className="h-5 w-5" />
                 Payment Method
@@ -218,69 +279,6 @@ export function CheckoutContent() {
                   </p>
                 </div>
               )}
-            </div>
-          </div>
-
-          {/* Right Column - Order Summary */}
-          <div>
-            <div className="sticky top-24 rounded-2xl border border-border bg-card p-6">
-              <h2 className="mb-4 text-lg font-semibold text-foreground">
-                Order Summary
-              </h2>
-
-              <div className="space-y-3 border-b border-border pb-4">
-                {items.map((item) => (
-                  <div key={item.id} className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">
-                      {formatQuantity(item.quantity)} {item.platform}{" "}
-                      {item.service}
-                    </span>
-                    <span className="text-foreground">
-                      ${item.price.toFixed(2)}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="space-y-2 border-b border-border py-4">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Subtotal</span>
-                  <span className="text-foreground">${total.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Processing Fee</span>
-                  <span className="text-green-500">FREE</span>
-                </div>
-              </div>
-
-              <div className="flex justify-between py-4 text-lg font-bold">
-                <span className="text-foreground">Total</span>
-                <span className="text-primary">${total.toFixed(2)}</span>
-              </div>
-
-
-
-              {/* Trust Badges */}
-              <div className="mt-6 flex items-center justify-center gap-4 border-t border-border pt-6">
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Shield className="h-4 w-4 text-green-500" />
-                  Secure Checkout
-                </div>
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Lock className="h-4 w-4 text-blue-500" />
-                  SSL Encrypted
-                </div>
-              </div>
-
-              {/* Money Back Guarantee */}
-              <div className="mt-4 rounded-lg bg-green-500/10 p-4 text-center">
-                <p className="text-sm font-medium text-green-700">
-                  100% Money Back Guarantee
-                </p>
-                <p className="mt-1 text-xs text-green-600">
-                  If we don&apos;t deliver, you get a full refund
-                </p>
-              </div>
             </div>
           </div>
         </div>
