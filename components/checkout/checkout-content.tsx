@@ -182,7 +182,7 @@ export function CheckoutContent() {
                 <CreditCard className="h-5 w-5" />
                 Payment Method
               </h2>
-              {email ? (
+              {email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? (
                 <StripeProvider
                   email={email}
                   onSuccess={(ids) => {
@@ -194,7 +194,7 @@ export function CheckoutContent() {
               ) : (
                 <div className="rounded-lg border border-dashed border-border bg-secondary/30 p-6 text-center">
                   <p className="text-sm text-muted-foreground">
-                    Please enter your email address above to proceed with payment.
+                    Please enter a valid email address above to proceed with payment.
                   </p>
                 </div>
               )}
