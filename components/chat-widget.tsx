@@ -29,11 +29,19 @@ export function ChatWidget() {
     const [name, setName] = useState("");
     const [hasJoined, setHasJoined] = useState(false);
     const [welcomeMessage, setWelcomeMessage] = useState("");
+    const [showBubble, setShowBubble] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    // Set random welcome message on mount
+    // Set random welcome message on mount and show bubble
     useEffect(() => {
         setWelcomeMessage(WELCOME_MESSAGES[Math.floor(Math.random() * WELCOME_MESSAGES.length)]);
+
+        // Show bubble after 2 seconds
+        const timer = setTimeout(() => {
+            setShowBubble(true);
+        }, 2000);
+
+        return () => clearTimeout(timer);
     }, []);
 
     // Load session from local storage on mount
@@ -131,21 +139,46 @@ export function ChatWidget() {
 
     return (
         <>
+            {/* Floating Welcome Bubble */}
+            <div
+                className={cn(
+                    "fixed bottom-24 right-6 z-40 max-w-[250px] bg-white text-foreground px-4 py-3 rounded-2xl rounded-br-none shadow-xl border border-border transition-all duration-500 transform",
+                    showBubble && !isOpen ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-4 scale-95 pointer-events-none"
+                )}
+            >
+                <div className="text-sm font-medium relative">
+                    {welcomeMessage}
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setShowBubble(false);
+                        }}
+                        className="absolute -top-2 -right-2 h-5 w-5 bg-muted rounded-full flex items-center justify-center hover:bg-muted/80"
+                    >
+                        <X className="h-3 w-3" />
+                    </button>
+                </div>
+            </div>
+
             {/* Chat Button */}
             <Button
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={() => {
+                    setIsOpen(!isOpen);
+                    setShowBubble(false);
+                }}
                 className={cn(
-                    "fixed bottom-6 right-6 z-50 h-16 w-16 rounded-full shadow-lg transition-all duration-300 hover:scale-105 p-0 overflow-hidden bg-white hover:bg-white/90 border-2 border-primary/20",
+                    "fixed bottom-6 right-6 z-50 h-20 w-20 rounded-full shadow-none transition-all duration-300 hover:scale-110 p-0 bg-transparent hover:bg-transparent",
                     isOpen ? "rotate-90 scale-0 opacity-0" : "scale-100 opacity-100"
                 )}
                 size="icon"
             >
-                <div className="relative h-full w-full p-2">
+                <div className="relative h-full w-full drop-shadow-2xl filter">
                     <Image
                         src="/fox-logo.png"
                         alt="Chat"
                         fill
                         className="object-contain"
+                        priority
                     />
                 </div>
             </Button>
@@ -161,8 +194,8 @@ export function ChatWidget() {
             >
                 {/* Header */}
                 <div className="flex items-center justify-between bg-primary px-4 py-3 text-primary-foreground">
-                    <div className="flex items-center gap-3">
-                        <div className="relative h-10 w-10 bg-white rounded-full p-1">
+                    <div className="flex items-center">
+                        <div className="relative h-10 w-10 min-w-[2.5rem] bg-white rounded-full p-1 mr-3 flex-shrink-0">
                             <Image
                                 src="/fox-logo.png"
                                 alt="FoxFollows"
@@ -171,15 +204,15 @@ export function ChatWidget() {
                             />
                             <div className="h-2.5 w-2.5 rounded-full bg-green-500 absolute bottom-0 right-0 ring-2 ring-white"></div>
                         </div>
-                        <div>
-                            <h3 className="font-semibold text-sm">FoxFollows Support</h3>
-                            <p className="text-xs opacity-90">Online</p>
+                        <div className="flex flex-col justify-center">
+                            <h3 className="font-semibold text-sm leading-tight">FoxFollows Support</h3>
+                            <p className="text-xs opacity-90 leading-tight">Online</p>
                         </div>
                     </div>
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-primary-foreground hover:bg-primary-foreground/20"
+                        className="h-8 w-8 text-primary-foreground hover:bg-primary-foreground/20 flex-shrink-0"
                         onClick={() => setIsOpen(false)}
                     >
                         <X className="h-5 w-5" />
