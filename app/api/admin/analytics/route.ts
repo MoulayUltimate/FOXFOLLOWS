@@ -68,8 +68,8 @@ export async function GET(request: NextRequest) {
             dateFilter = `AND created_at >= '${monthAgo.toISOString()}'`;
         }
 
-        // Calculate live activity (last 5 mins)
-        const fiveMinsAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+        // Calculate live activity (last 10 mins)
+        const tenMinsAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
 
         // Fetch analytics data
         const [
@@ -86,13 +86,13 @@ export async function GET(request: NextRequest) {
             env.DB.prepare(`SELECT COUNT(*) as count FROM page_views WHERE 1=1 ${dateFilter}`).first(),
             env.DB.prepare(`SELECT COUNT(DISTINCT session_id) as count FROM page_views WHERE 1=1 ${dateFilter}`).first(),
             env.DB.prepare(`SELECT country, COUNT(*) as count FROM page_views WHERE country IS NOT NULL ${dateFilter} GROUP BY country ORDER BY count DESC LIMIT 10`).all(),
-            env.DB.prepare(`SELECT path, COUNT(*) as count FROM page_views WHERE 1=1 ${dateFilter} GROUP BY path ORDER BY count DESC LIMIT 10`).all(),
+            env.DB.prepare(`SELECT path, COUNT(*) as count FROM page_views WHERE 1=1 AND path NOT LIKE '/action/%' ${dateFilter} GROUP BY path ORDER BY count DESC LIMIT 10`).all(),
             env.DB.prepare(`SELECT DATE(created_at) as date, COUNT(*) as count FROM page_views WHERE 1=1 ${dateFilter} GROUP BY DATE(created_at) ORDER BY date`).all(),
             env.DB.prepare(`SELECT device_type as device, COUNT(*) as count FROM page_views WHERE device_type IS NOT NULL ${dateFilter} GROUP BY device_type`).all(),
             // Live activity queries
-            env.DB.prepare(`SELECT COUNT(DISTINCT session_id) as count FROM page_views WHERE path = '/action/add-to-cart' AND created_at >= ?`).bind(fiveMinsAgo).first(),
-            env.DB.prepare(`SELECT COUNT(DISTINCT session_id) as count FROM page_views WHERE path = '/checkout' AND created_at >= ?`).bind(fiveMinsAgo).first(),
-            env.DB.prepare(`SELECT COUNT(*) as count FROM orders WHERE created_at >= ?`).bind(fiveMinsAgo).first(),
+            env.DB.prepare(`SELECT COUNT(DISTINCT session_id) as count FROM page_views WHERE path = '/action/add-to-cart' AND created_at >= ?`).bind(tenMinsAgo).first(),
+            env.DB.prepare(`SELECT COUNT(DISTINCT session_id) as count FROM page_views WHERE path = '/checkout' AND created_at >= ?`).bind(tenMinsAgo).first(),
+            env.DB.prepare(`SELECT COUNT(*) as count FROM orders WHERE created_at >= ?`).bind(tenMinsAgo).first(),
         ]);
 
         return NextResponse.json({
