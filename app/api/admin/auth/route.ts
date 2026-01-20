@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 
-// Remove edge runtime to use nodejs_compat from wrangler.toml
-// export const runtime = 'edge';
+export const runtime = 'edge';
 
 export async function POST(request: Request) {
     try {
@@ -13,8 +12,9 @@ export async function POST(request: Request) {
         const adminPassword = 'foxfollows2024';
 
         if (username === adminUsername && password === adminPassword) {
-            // Use Buffer which is supported in nodejs_compat
-            const token = Buffer.from(JSON.stringify({ u: username, t: Date.now() })).toString('base64');
+            // Use standard btoa for Edge compatibility
+            const tokenData = JSON.stringify({ u: username, t: Date.now() });
+            const token = btoa(tokenData);
 
             const response = NextResponse.json({ success: true, username });
 
@@ -41,7 +41,8 @@ export async function POST(request: Request) {
         return NextResponse.json(
             {
                 error: 'Server Error',
-                details: error instanceof Error ? error.message : 'Unknown error'
+                details: error instanceof Error ? error.message : 'Unknown error',
+                stack: error instanceof Error ? error.stack : undefined
             },
             { status: 500 }
         );
