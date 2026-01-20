@@ -59,3 +59,19 @@ CREATE INDEX IF NOT EXISTS idx_page_views_path ON page_views(path);
 CREATE INDEX IF NOT EXISTS idx_page_views_created_at ON page_views(created_at);
 CREATE INDEX IF NOT EXISTS idx_page_views_country ON page_views(country);
 CREATE INDEX IF NOT EXISTS idx_page_views_session_id ON page_views(session_id);
+
+-- Products table for dynamic pricing
+CREATE TABLE IF NOT EXISTS products (
+  id TEXT PRIMARY KEY,
+  platform TEXT NOT NULL,
+  service TEXT NOT NULL,
+  name TEXT NOT NULL,
+  quantity INTEGER NOT NULL,
+  price REAL NOT NULL,
+  original_price REAL,
+  is_popular INTEGER DEFAULT 0,
+  is_best_value INTEGER DEFAULT 0,
+  active INTEGER DEFAULT 1,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);

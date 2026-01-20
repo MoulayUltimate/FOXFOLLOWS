@@ -13,6 +13,7 @@ import {
     LogOut,
     Menu,
     X,
+    Package,
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ import { Button } from "@/components/ui/button";
 const navItems = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
     { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
+    { href: "/admin/products", label: "Products", icon: Package },
     { href: "/admin/messages", label: "Messages", icon: MessageSquare },
     { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
 ];
