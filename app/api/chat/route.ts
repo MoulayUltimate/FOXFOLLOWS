@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getRequestContext } from '@cloudflare/next-on-pages';
+import { sendTelegramNotification } from '@/lib/telegram';
 
 export const runtime = 'edge';
 
@@ -37,7 +38,7 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
         const { sessionId, message, name, email } = body;
 
-        const env = getRequestContext().env as any;
+        const { env, ctx } = getRequestContext() as any;
         if (!env?.DB) {
             return NextResponse.json({ error: 'Database not available' }, { status: 500 });
         }
@@ -78,6 +79,12 @@ export async function POST(request: NextRequest) {
             )
                 .bind(currentSessionId)
                 .run();
+
+            // Send Telegram notification
+            if (env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID) {
+                const notificationText = `<b>New Chat Message</b>\n\n<b>From:</b> ${name || 'Visitor'} (${email || 'No email'})\n<b>Message:</b> ${message}`;
+                ctx.waitUntil(sendTelegramNotification(env.TELEGRAM_BOT_TOKEN, env.TELEGRAM_CHAT_ID, notificationText));
+            }
         }
 
         return NextResponse.json({ success: true, sessionId: currentSessionId });

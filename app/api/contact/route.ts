@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getRequestContext } from '@cloudflare/next-on-pages';
+import { sendTelegramNotification } from '@/lib/telegram';
 
 export const runtime = 'edge';
 
@@ -12,7 +13,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
-        const env = getRequestContext().env as any;
+        const { env, ctx } = getRequestContext() as any;
         if (!env?.DB) {
             return NextResponse.json({ error: 'Database not available' }, { status: 500 });
         }
@@ -23,6 +24,11 @@ export async function POST(request: NextRequest) {
         `)
             .bind(name, email, subject, message, orderId || null)
             .run();
+
+        if (env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID) {
+            const notificationText = `<b>New Contact Message</b>\n\n<b>From:</b> ${name} (${email})\n<b>Subject:</b> ${subject}\n<b>Message:</b> ${message}`;
+            ctx.waitUntil(sendTelegramNotification(env.TELEGRAM_BOT_TOKEN, env.TELEGRAM_CHAT_ID, notificationText));
+        }
 
         return NextResponse.json({ success: true });
 

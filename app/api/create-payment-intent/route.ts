@@ -3,13 +3,14 @@ import Stripe from "stripe";
 import { platforms } from "@/lib/products";
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import { generateOrderId } from "@/lib/db";
+import { sendTelegramNotification } from "@/lib/telegram";
 
 export const runtime = 'edge';
 
 export async function POST(req: Request) {
     try {
         const { items, email } = await req.json();
-        const env = getRequestContext().env as any;
+        const { env, ctx } = getRequestContext() as any;
 
         if (!env.STRIPE_SECRET_KEY) {
             console.error("STRIPE_SECRET_KEY is missing from environment variables");
@@ -88,6 +89,11 @@ export async function POST(req: Request) {
                 itemCount: items.length,
             },
         });
+
+        if (env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID) {
+            const message = `<b>New Checkout Started</b>\n\n<b>Email:</b> ${email}\n<b>Amount:</b> $${totalAmount.toFixed(2)}\n<b>Items:</b> ${items.length}`;
+            ctx.waitUntil(sendTelegramNotification(env.TELEGRAM_BOT_TOKEN, env.TELEGRAM_CHAT_ID, message));
+        }
 
         return NextResponse.json({
             clientSecret: paymentIntent.client_secret,
