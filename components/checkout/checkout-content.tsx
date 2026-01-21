@@ -24,11 +24,27 @@ import { getPlatformIcon } from "@/components/platform-icons";
 export function CheckoutContent() {
   const { items, removeItem, total, clearCart } = useCart();
   const [email, setEmail] = useState("");
+  const [confirmedEmail, setConfirmedEmail] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderComplete, setOrderComplete] = useState(false);
   const [createdOrderIds, setCreatedOrderIds] = useState<string[]>([]);
 
+  const isValidEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
 
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    if (confirmedEmail) {
+      setConfirmedEmail(null);
+    }
+  };
+
+  const handleContinueToPayment = () => {
+    if (isValidEmail(email)) {
+      setConfirmedEmail(email);
+    }
+  };
 
   if (orderComplete) {
     return (
@@ -42,7 +58,7 @@ export function CheckoutContent() {
           </h1>
           <p className="mt-4 text-muted-foreground">
             Thank you for your order! We&apos;ve sent a confirmation email to{" "}
-            <span className="font-medium text-foreground">{email}</span>. Your
+            <span className="font-medium text-foreground">{confirmedEmail || email}</span>. Your
             order will start processing within the next few minutes.
           </p>
           {createdOrderIds.length > 0 && (
@@ -171,7 +187,7 @@ export function CheckoutContent() {
                   type="email"
                   placeholder="your@email.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={handleEmailChange}
                   className="mt-1"
                 />
                 <p className="mt-1 text-xs text-muted-foreground">
@@ -247,9 +263,9 @@ export function CheckoutContent() {
                 <CreditCard className="h-5 w-5" />
                 Payment Method
               </h2>
-              {email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? (
+              {confirmedEmail ? (
                 <StripeProvider
-                  email={email}
+                  email={confirmedEmail}
                   onSuccess={async () => {
                     try {
                       const res = await fetch("/api/orders", {
@@ -257,7 +273,7 @@ export function CheckoutContent() {
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
                           items,
-                          email,
+                          email: confirmedEmail,
                           status: "completed",
                         }),
                       });
@@ -274,9 +290,16 @@ export function CheckoutContent() {
                 />
               ) : (
                 <div className="rounded-lg border border-dashed border-border bg-secondary/30 p-6 text-center">
-                  <p className="text-sm text-muted-foreground">
-                    Please enter a valid email address above to proceed with payment.
+                  <p className="mb-4 text-sm text-muted-foreground">
+                    Please enter a valid email address to proceed with payment.
                   </p>
+                  <Button
+                    onClick={handleContinueToPayment}
+                    disabled={!isValidEmail(email)}
+                    className="w-full"
+                  >
+                    Continue to Payment
+                  </Button>
                 </div>
               )}
             </div>
