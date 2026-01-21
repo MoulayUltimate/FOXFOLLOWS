@@ -1,10 +1,28 @@
 export function PaymentMethods({ className = "" }: { className?: string }) {
     return (
         <div className={`flex flex-wrap items-center justify-center gap-3 ${className}`}>
-            {/* Stripe (replacing Nigie) */}
-            <div className="flex h-9 w-14 items-center justify-center rounded-lg bg-[#635BFF] shadow-sm transition-transform hover:scale-110 hover:shadow-md cursor-pointer">
-                <svg viewBox="0 0 60 25" className="h-4 w-auto fill-white" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M59.64 14.28h-8.06c.19 1.93 1.6 2.55 3.2 2.55 1.64 0 2.96-.27 4.06-.68v2.92c-1.12.47-2.58.79-4.38.79-4 0-6.37-2.35-6.37-6.71 0-3.78 2.14-6.85 5.97-6.85 3.8 0 5.58 3.05 5.58 6.78v1.2zm-4.66-5.32c-1.02 0-1.75.77-1.91 2.18h3.65c-.01-1.18-.52-2.18-1.74-2.18zM40.95 6.5h4.24v12.95h-4.24V6.5zm2.12-1.93c-1.35 0-2.15-.85-2.15-1.93 0-1.1.82-1.93 2.17-1.93 1.35 0 2.14.83 2.14 1.93 0 1.08-.79 1.93-2.16 1.93zm-6.96 1.93v1.14c-.74-.84-1.75-1.34-3.01-1.34-2.71 0-4.87 2.38-4.87 6.23 0 3.86 2.16 6.05 4.87 6.05 1.04 0 2.05-.36 2.96-1.2v.98c0 1.6-.91 2.33-2.49 2.33-1.31 0-2.58-.47-3.59-1.12l-1.25 2.75c1.38.88 3.22 1.38 5.02 1.38 4.08 0 6.36-2.1 6.36-5.85V6.5h-4zm-1.08 8.92c-1.22 0-2.27-.98-2.27-3.02 0-2.05 1.05-3.18 2.27-3.18 1.27 0 2.37 1.08 2.37 3.18 0 2.12-1.1 3.02-2.37 3.02zm-8.71 3.94h-4.24V6.5h4.24v12.95zm-2.12 1.5c1.35 0 2.16.84 2.16 1.93 0 1.1-.81 1.93-2.16 1.93-1.35 0-2.17-.83-2.17-1.93 0-1.09.82-1.93 2.17-1.93zm-8.33-1.5V13.5c0-1.4-.52-2.1-1.67-2.1-.89 0-1.87.7-1.87 2.23v5.82H8.09V6.5h4.03v1.36c.84-1.03 2.16-1.56 3.47-1.56 2.49 0 4.28 1.59 4.28 4.76v8.4h-4.24zm-17.76-.2c-1.31 0-2.4-.36-3.35-.92l.63-2.87c.84.52 2.05.98 3.11.98.81 0 1.24-.27 1.24-.72 0-1.25-5.11-.7-5.11-4.3 0-2.17 1.7-3.84 4.68-3.84 1.22 0 2.37.27 3.24.67l-.63 2.6c-.77-.4-1.64-.67-2.6-.67-.77 0-1.2.27-1.2.67 0 1.1 5.11.58 5.11 4.28 0 2.33-1.93 4.12-5.12 4.12z" />
+            {/* Mastercard */}
+            <div className="flex h-9 w-14 items-center justify-center rounded-lg bg-white border border-gray-100 shadow-sm transition-transform hover:scale-110 hover:shadow-md cursor-pointer">
+                <svg viewBox="0 0 24 15" className="h-5 w-auto" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="7" cy="7.5" r="7" fill="#EB001B" />
+                    <circle cx="17" cy="7.5" r="7" fill="#F79E1B" />
+                    <path d="M12 2.5c1.7 1.3 2.8 3.3 2.8 5.5s-1.1 4.2-2.8 5.5c-1.7-1.3-2.8-3.3-2.8-5.5s1.1-4.2 2.8-5.5z" fill="#FF5F00" />
+                </svg>
+            </div>
+
+            {/* Maestro */}
+            <div className="flex h-9 w-14 items-center justify-center rounded-lg bg-white border border-gray-100 shadow-sm transition-transform hover:scale-110 hover:shadow-md cursor-pointer">
+                <svg viewBox="0 0 24 15" className="h-5 w-auto" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="7" cy="7.5" r="7" fill="#EB001B" />
+                    <circle cx="17" cy="7.5" r="7" fill="#00A1E0" />
+                    <path d="M12 2.5c1.7 1.3 2.8 3.3 2.8 5.5s-1.1 4.2-2.8 5.5c-1.7-1.3-2.8-3.3-2.8-5.5s1.1-4.2 2.8-5.5z" fill="#7358C3" fillOpacity="0.6" />
+                </svg>
+            </div>
+
+            {/* VISA */}
+            <div className="flex h-9 w-14 items-center justify-center rounded-lg bg-white border border-gray-100 shadow-sm transition-transform hover:scale-110 hover:shadow-md cursor-pointer">
+                <svg viewBox="0 0 48 16" className="h-3 w-auto" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="#1434CB" d="M19.5 1l-3.6 14h-4.5L15 1h4.5zm16.6 9l2.4-6.5.8 6.5h-3.2zm5 5h4.2l-3.7-14h-3.9c-.9 0-1.6.5-2 1.3l-6.9 12.7h4.8l1-2.6h5.9l.6 2.6zM29 9.5c0-3.6-5-3.8-5-5.4 0-.5.5-1 1.5-1.1.5 0 1.9-.1 3.5.7l.6-2.9C28.5.4 27.2 0 25.5 0c-4.5 0-7.7 2.4-7.7 5.8 0 2.5 2.2 3.9 3.9 4.8 1.8.8 2.4 1.4 2.4 2.2 0 1.2-1.4 1.7-2.8 1.7-2.4 0-3.7-.6-4.8-1.1l-.8 3.9c1.1.5 3.1 1 5.2 1 4.8 0 8-2.4 8-6zM11.4 1L4 15h-4L.5 3.6c0-.6-.2-1-.8-1.4C-1 1.6.3 1.3 1.5 1l.3 1.3 3.8 10.2L11.4 1h4.2" />
                 </svg>
             </div>
 
@@ -12,15 +30,6 @@ export function PaymentMethods({ className = "" }: { className?: string }) {
             <div className="flex h-9 w-14 items-center justify-center rounded-lg bg-[#006FCF] shadow-sm transition-transform hover:scale-110 hover:shadow-md cursor-pointer">
                 <svg viewBox="0 0 50 30" className="h-4 w-auto fill-white" xmlns="http://www.w3.org/2000/svg">
                     <path d="M4.6 11.8h3.8l-2.3-5.6h-2l-2.3 5.6h3.8l.3-.9h2.2l.3.9zm-1.1-2.8h-1.6l.8-2.2.8 2.2zm12.6 2.8h2.3l-1.8-5.6h-3.4l-1.8 5.6h2.3l.3-.9h2.2l.3.9zm-1.1-2.8h-1.6l.8-2.2.8 2.2zm4.3 2.8h6.2v-1.4h-4v-.8h3.6v-1.4h-3.6v-.7h3.9V4.8h-6.1v7zm12.3 0l2.6-3.2 2.5 3.2h2.8l-3.8-4.6 3.6-4.2h-2.7l-2.4 2.9-2.3-2.9h-2.7l3.5 4.2-3.8 4.6h2.7z" />
-                </svg>
-            </div>
-
-            {/* Mastercard */}
-            <div className="flex h-9 w-14 items-center justify-center rounded-lg bg-white border border-gray-100 shadow-sm transition-transform hover:scale-110 hover:shadow-md cursor-pointer">
-                <svg viewBox="0 0 24 15" className="h-5 w-auto" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="7" cy="7.5" r="7" fill="#EB001B" />
-                    <circle cx="17" cy="7.5" r="7" fill="#F79E1B" />
-                    <path d="M12 2.5c1.7 1.3 2.8 3.3 2.8 5.5s-1.1 4.2-2.8 5.5c-1.7-1.3-2.8-3.3-2.8-5.5s1.1-4.2 2.8-5.5z" fill="#FF5F00" />
                 </svg>
             </div>
 
@@ -32,20 +41,6 @@ export function PaymentMethods({ className = "" }: { className?: string }) {
                 </svg>
             </div>
 
-            {/* VISA */}
-            <div className="flex h-9 w-14 items-center justify-center rounded-lg bg-white border border-gray-100 shadow-sm transition-transform hover:scale-110 hover:shadow-md cursor-pointer">
-                <svg viewBox="0 0 48 16" className="h-3 w-auto" xmlns="http://www.w3.org/2000/svg">
-                    <path fill="#1434CB" d="M19.5 1l-3.6 14h-4.5L15 1h4.5zm16.6 9l2.4-6.5.8 6.5h-3.2zm5 5h4.2l-3.7-14h-3.9c-.9 0-1.6.5-2 1.3l-6.9 12.7h4.8l1-2.6h5.9l.6 2.6zM29 9.5c0-3.6-5-3.8-5-5.4 0-.5.5-1 1.5-1.1.5 0 1.9-.1 3.5.7l.6-2.9C28.5.4 27.2 0 25.5 0c-4.5 0-7.7 2.4-7.7 5.8 0 2.5 2.2 3.9 3.9 4.8 1.8.8 2.4 1.4 2.4 2.2 0 1.2-1.4 1.7-2.8 1.7-2.4 0-3.7-.6-4.8-1.1l-.8 3.9c1.1.5 3.1 1 5.2 1 4.8 0 8-2.4 8-6zM11.4 1L4 15h-4L.5 3.6c0-.6-.2-1-.8-1.4C-1 1.6.3 1.3 1.5 1l.3 1.3 3.8 10.2L11.4 1h4.2" />
-                </svg>
-            </div>
-
-            {/* Apple Pay */}
-            <div className="flex h-9 w-14 items-center justify-center rounded-lg bg-white border border-gray-100 shadow-sm transition-transform hover:scale-110 hover:shadow-md cursor-pointer">
-                <svg viewBox="0 0 50 21" className="h-4 w-auto" xmlns="http://www.w3.org/2000/svg">
-                    <path fill="black" d="M9.6 5.4c-.6.7-1.5 1.3-2.5 1.2-.1-1 .4-2 .9-2.7.6-.7 1.6-1.2 2.4-1.3.1 1.1-.3 2.1-.8 2.8zm.8 1.4c-1.4-.1-2.6.8-3.2.8-.7 0-1.7-.7-2.8-.7-1.4 0-2.8.8-3.5 2.1-1.5 2.6-.4 6.5 1.1 8.6.7 1 1.6 2.2 2.8 2.1 1.1 0 1.5-.7 2.8-.7 1.4 0 1.7.7 2.8.7 1.2 0 2-1 2.7-2.1.9-1.2 1.2-2.3 1.2-2.4-.1 0-2.4-.9-2.4-3.6 0-2.3 1.9-3.3 2-3.4-1.1-1.6-2.8-1.8-3.5-1.8v.4zm9.6-3.3v15.7h2.4v-5.4h3.4c3.1 0 5.3-2.1 5.3-5.2s-2.1-5.1-5.2-5.1h-5.9zm2.4 2h2.8c2.1 0 3.3 1.1 3.3 3.1 0 2-1.2 3.1-3.3 3.1h-2.8V5.5zm13.1 14c1.5 0 2.9-.8 3.6-2h.1v1.8h2.2V10.3c0-2.2-1.8-3.7-4.5-3.7-2.5 0-4.4 1.5-4.5 3.5h2.2c.2-1 1.1-1.6 2.2-1.6 1.4 0 2.2.7 2.2 1.9v.8l-2.9.2c-2.7.2-4.2 1.3-4.2 3.2 0 2 1.6 3.3 3.6 3.3zm.6-1.8c-1.2 0-2-.6-2-1.5 0-1 .7-1.5 2.1-1.6l2.6-.2v.9c0 1.4-1.2 2.4-2.7 2.4zm7 6.3c2.3 0 3.4-.9 4.4-3.6l4.2-11.7h-2.5l-2.8 8.9h-.1l-2.8-8.9h-2.5l4 11.3-.2.7c-.4 1.1-1 1.5-2 1.5-.2 0-.5 0-.6-.1v1.8c.2.1.7.1.9.1z" />
-                </svg>
-            </div>
-
             {/* Klarna */}
             <div className="flex h-9 w-14 items-center justify-center rounded-lg bg-[#FFB3C7] shadow-sm transition-transform hover:scale-110 hover:shadow-md cursor-pointer">
                 <svg viewBox="0 0 100 25" className="h-4 w-auto" xmlns="http://www.w3.org/2000/svg">
@@ -53,40 +48,15 @@ export function PaymentMethods({ className = "" }: { className?: string }) {
                 </svg>
             </div>
 
-            {/* Bitcoin */}
-            <div className="flex h-9 w-14 items-center justify-center rounded-lg bg-[#F7931A] shadow-sm transition-transform hover:scale-110 hover:shadow-md cursor-pointer">
-                <svg viewBox="0 0 24 24" className="h-5 w-auto fill-white" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M23.638 14.904c-1.602 6.43-8.113 10.34-14.542 8.736C2.67 22.036-1.244 15.525.363 9.105 1.962 2.67 8.475-1.243 14.9.358c6.43 1.605 10.342 8.115 8.738 14.546z" />
-                    <path fill="#F7931A" d="M17.1 10.1c.2-1.3-.8-2-2.2-2.5l.4-1.8-1-.3-.4 1.7c-.3-.1-.5-.1-.8-.2l.4-1.7-1-.3-.4 1.8c-.2-.1-.4-.1-.6-.2l-1.4-.4-.3 1.1s.8.2.7.2c.4.1.5.4.5.6l-.5 2.1v.1l-.7 2.8c-.1.2-.2.4-.6.3 0 0-.7-.2-.7-.2l-.5 1.2 1.3.3.7.2-.5 1.8 1 .3.4-1.8c.3.1.5.1.8.2l-.4 1.8 1 .3.5-1.8c1.7.3 3 .2 3.5-1.3.4-1.2 0-1.9-.9-2.4.6-.1 1.1-.6 1.3-1.4zm-2.3 3.2c-.3 1.2-2.3.6-3 .4l.5-2.2c.7.2 2.8.5 2.5 1.8zm.3-3.2c-.3 1.1-1.9.5-2.5.4l.5-2c.6.1 2.4.4 2 1.6z" />
-                </svg>
-            </div>
-
-            {/* Shop Pay (replacing Oq aya) */}
-            <div className="flex h-9 w-14 items-center justify-center rounded-lg bg-[#5A31F4] shadow-sm transition-transform hover:scale-110 hover:shadow-md cursor-pointer">
-                <svg viewBox="0 0 90 40" className="h-5 w-auto fill-white" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12.8 19.7c-2.8 0-4.6-1.6-4.6-4.1 0-2.4 1.8-4.1 4.6-4.1 2.8 0 4.6 1.6 4.6 4.1 0 2.4-1.8 4.1-4.6 4.1zm0-11.4C7.4 8.3 4 11.2 4 15.6c0 4.4 3.4 7.3 8.8 7.3 5.3 0 8.8-2.9 8.8-7.3 0-4.4-3.4-7.3-8.8-7.3zm18.3 11.4c-2.4 0-3.9-1.6-3.9-4.1 0-2.4 1.6-4.1 3.9-4.1 2.4 0 3.9 1.6 3.9 4.1 0 2.4-1.6 4.1-3.9 4.1zm0-11.4c-4.7 0-8 2.9-8 7.3 0 4.4 3.3 7.3 8 7.3 2.1 0 4-.6 5.3-1.7v5.1h4.1V8.6h-4.1v1.7c-1.3-1.1-3.2-1.7-5.3-1.7zm28.8 0c-4.7 0-8 2.9-8 7.3 0 4.4 3.3 7.3 8 7.3 2.1 0 4-.6 5.3-1.7v5.1h4.1V8.6h-4.1v1.7c-1.3-1.1-3.2-1.7-5.3-1.7zm0 11.4c-2.4 0-3.9-1.6-3.9-4.1 0-2.4 1.6-4.1 3.9-4.1 2.4 0 3.9 1.6 3.9 4.1 0 2.4-1.6 4.1-3.9 4.1zm19.9-11.4l-5.1 14.3h4.4l1.1-3.3h7.2l1.1 3.3h4.4l-5.1-14.3h-8zm2.2 8.3l2.2-6.4 2.2 6.4h-4.4z" />
-                    <path d="M78.6 8.6l-2.9 8.5-2.9-8.5h-4.6l5.3 14.3-2.3 6.6h4.4l8-20.9h-5z" />
-                </svg>
-            </div>
-
-            {/* Ethereum */}
+            {/* Bank Transfer */}
             <div className="flex h-9 w-14 items-center justify-center rounded-lg bg-white border border-gray-100 shadow-sm transition-transform hover:scale-110 hover:shadow-md cursor-pointer">
-                <svg viewBox="0 0 24 24" className="h-5 w-auto" xmlns="http://www.w3.org/2000/svg">
-                    <path fill="#627EEA" d="M12 1.5l-.1.4v14.2l.1.1 6.6-3.9L12 1.5z" />
-                    <path fill="#3C3C3B" d="M12 1.5L5.4 12.3l6.6 3.9V1.5z" />
-                    <path fill="#627EEA" d="M12 17.5l-.1.1v5l.1.3 6.6-9.3-6.6 3.9z" />
-                    <path fill="#3C3C3B" d="M12 22.9v-5.4l-6.6-3.9 6.6 9.3z" />
-                    <path fill="#8C8C8C" d="M12 16.2l6.6-3.9L12 9.1v7.1z" />
-                    <path fill="#393939" d="M5.4 12.3l6.6 3.9V9.1l-6.6 3.2z" />
-                </svg>
-            </div>
-
-            {/* Litecoin */}
-            <div className="flex h-9 w-14 items-center justify-center rounded-lg bg-white border border-gray-100 shadow-sm transition-transform hover:scale-110 hover:shadow-md cursor-pointer">
-                <svg viewBox="0 0 24 24" className="h-5 w-auto" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="12" cy="12" r="11" fill="#A6A9AA" />
-                    <path fill="white" d="M12 5.5l-1.5 6.5-2 1 .5-2-1.5.5.5-2.5 1.5-.5 2-8.5h2l-1.5 6.5 1.5-.5-.5 2.5-1.5.5-.5 2h5v2H8l.5-2 1.5-.5L12 5.5z" />
-                </svg>
+                <div className="flex flex-col items-center justify-center">
+                    <svg viewBox="0 0 24 24" className="h-4 w-4 mb-[1px]" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" fill="none" />
+                        <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4zM15 16H5V8h10v8zm-6-1h2v-2h2v-2h-2V9H9v2H7v2h2z" fill="#000" />
+                    </svg>
+                    <span className="text-[5px] font-bold leading-none text-center">BANK<br />TRANSFER</span>
+                </div>
             </div>
 
             {/* Google Pay */}
@@ -100,6 +70,23 @@ export function PaymentMethods({ className = "" }: { className?: string }) {
                     <path fill="#FBBC04" d="M3.5 10.3c-.2-.5-.2-1.1-.2-1.8 0-.6.1-1.2.2-1.8V4.9H.9C.3 6.1 0 7.5 0 8.9c0 1.4.3 2.8.9 4l2.6-2.6z" />
                     <path fill="#EA4335" d="M7.7 4c1.1 0 2.1.4 2.8 1.1l2.1-2.1C11.4 1.8 9.7 1 7.7 1 4.8 1 2.2 2.7.9 5.2l2.6 2c.6-1.8 2.3-3.2 4.2-3.2z" />
                 </svg>
+            </div>
+
+            {/* Apple Pay */}
+            <div className="flex h-9 w-14 items-center justify-center rounded-lg bg-white border border-gray-100 shadow-sm transition-transform hover:scale-110 hover:shadow-md cursor-pointer">
+                <svg viewBox="0 0 50 21" className="h-4 w-auto" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="black" d="M9.6 5.4c-.6.7-1.5 1.3-2.5 1.2-.1-1 .4-2 .9-2.7.6-.7 1.6-1.2 2.4-1.3.1 1.1-.3 2.1-.8 2.8zm.8 1.4c-1.4-.1-2.6.8-3.2.8-.7 0-1.7-.7-2.8-.7-1.4 0-2.8.8-3.5 2.1-1.5 2.6-.4 6.5 1.1 8.6.7 1 1.6 2.2 2.8 2.1 1.1 0 1.5-.7 2.8-.7 1.4 0 1.7.7 2.8.7 1.2 0 2-1 2.7-2.1.9-1.2 1.2-2.3 1.2-2.4-.1 0-2.4-.9-2.4-3.6 0-2.3 1.9-3.3 2-3.4-1.1-1.6-2.8-1.8-3.5-1.8v.4zm9.6-3.3v15.7h2.4v-5.4h3.4c3.1 0 5.3-2.1 5.3-5.2s-2.1-5.1-5.2-5.1h-5.9zm2.4 2h2.8c2.1 0 3.3 1.1 3.3 3.1 0 2-1.2 3.1-3.3 3.1h-2.8V5.5zm13.1 14c1.5 0 2.9-.8 3.6-2h.1v1.8h2.2V10.3c0-2.2-1.8-3.7-4.5-3.7-2.5 0-4.4 1.5-4.5 3.5h2.2c.2-1 1.1-1.6 2.2-1.6 1.4 0 2.2.7 2.2 1.9v.8l-2.9.2c-2.7.2-4.2 1.3-4.2 3.2 0 2 1.6 3.3 3.6 3.3zm.6-1.8c-1.2 0-2-.6-2-1.5 0-1 .7-1.5 2.1-1.6l2.6-.2v.9c0 1.4-1.2 2.4-2.7 2.4zm7 6.3c2.3 0 3.4-.9 4.4-3.6l4.2-11.7h-2.5l-2.8 8.9h-.1l-2.8-8.9h-2.5l4 11.3-.2.7c-.4 1.1-1 1.5-2 1.5-.2 0-.5 0-.6-.1v1.8c.2.1.7.1.9.1z" />
+                </svg>
+            </div>
+
+            {/* Alipay */}
+            <div className="flex h-9 w-14 items-center justify-center rounded-lg bg-[#00A1E9] shadow-sm transition-transform hover:scale-110 hover:shadow-md cursor-pointer">
+                <div className="flex flex-col items-center justify-center">
+                    <svg viewBox="0 0 1024 1024" className="h-4 w-4 fill-white" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M860.2 363.8c-32.8 0-149.6 0-149.6 0-10.8-49.8-28.6-96.6-52-140.2 69.4-5.6 128.8-10.4 128.8-10.4 23.4-1.8 23.4-36.4 0-38.2l-180.2-14.4c0 0-13.6-67.6-14.6-72.2-5.4-25.2-41-25.2-46.4 0-1 4.6-14.6 72.2-14.6 72.2l-180.2 14.4c-23.4 1.8-23.4 36.4 0 38.2 0 0 59.4 4.8 128.8 10.4-25.6 48-46.2 100.2-58.8 155.6-70.8 11.2-142.2 22.6-142.2 22.6-23.4 3.8-23.4 39.6 0 43.4l43.2 6.8c18.2 2.8 35.8-9.4 39.6-27.6 0 0 2.2-10.8 6.6-32.2 35.2-5.6 72.2-11.4 110.8-17.2 11.6 98.4 51.6 220.4 121.2 328.6-90.2 64.6-193.4 96.6-302.4 96.6-26.6 0-26.6 41.4 0 41.4 126.6 0 245.8-37.4 348.6-112.8 54.4 39.8 115.8 70.8 181.8 90.8 13.8 4.2 26.6-8.2 22.4-22-1.4-4.6-4.2-8.8-8-11.8-61.2-18.6-118-47.2-168.8-84 81.6-93.6 133.4-213.6 148.6-341.2 0 0 116.8 0 137.4 0 23.4 0 23.4-38.2 0-38.2zM521.8 668.2C465.4 577.6 431.2 475.6 421 363.8c39.6-6.4 79.2-12.8 118.8-19.2 13.6 112.2 56.2 217.4 122.2 305.6-46.2 8-93.4 14-140.2 18z" />
+                    </svg>
+                    <span className="text-[5px] font-bold leading-none text-white mt-[1px]">ALIPAY</span>
+                </div>
             </div>
         </div>
     );
