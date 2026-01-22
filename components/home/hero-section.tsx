@@ -14,18 +14,20 @@ import {
 import { FoxLogo } from "@/components/fox-logo";
 import { getPlatformIcon } from "@/components/platform-icons";
 import { platforms } from "@/lib/products";
-import { ArrowRight, Shield, Zap, Users, Star } from "lucide-react";
+import { ArrowRight, Shield, Zap, Users, Star, Loader2 } from "lucide-react";
 
 export function HeroSection() {
   const router = useRouter();
   const [selectedPlatform, setSelectedPlatform] = useState("instagram");
   const [selectedService, setSelectedService] = useState("followers");
   const [username, setUsername] = useState("");
+  const [isNavigating, setIsNavigating] = useState(false);
 
   const platform = platforms.find((p) => p.id === selectedPlatform);
   const services = platform?.services || [];
 
   const handleGetStarted = () => {
+    setIsNavigating(true);
     if (username.trim()) {
       router.push(
         `/${selectedPlatform}?service=${selectedService}&username=${encodeURIComponent(username.trim())}`
@@ -123,11 +125,21 @@ export function HeroSection() {
 
                 <Button
                   onClick={handleGetStarted}
+                  disabled={isNavigating}
                   size="lg"
                   className="gap-2 whitespace-nowrap"
                 >
-                  Get Started
-                  <ArrowRight className="h-4 w-4" />
+                  {isNavigating ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Loading...
+                    </>
+                  ) : (
+                    <>
+                      Get Started
+                      <ArrowRight className="h-4 w-4" />
+                    </>
+                  )}
                 </Button>
               </div>
             </div>

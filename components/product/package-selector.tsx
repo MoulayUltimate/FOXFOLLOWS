@@ -9,7 +9,7 @@ import { useCart } from "@/components/cart-provider";
 import { toast } from "sonner";
 import type { Platform, Service, Package } from "@/lib/products";
 import { formatQuantity } from "@/lib/products";
-import { Check, ShoppingCart, Zap, Shield, Clock, Star } from "lucide-react";
+import { Check, ShoppingCart, Zap, Shield, Clock, Star, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface PackageSelectorProps {
@@ -35,6 +35,7 @@ export function PackageSelector({
     selectedService.packages.find((p) => p.popular) || selectedService.packages[2]
   );
   const [username, setUsername] = useState(initialUsername || "");
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   useEffect(() => {
     const serviceParam = searchParams.get("service");
@@ -67,6 +68,8 @@ export function PackageSelector({
       toast.error("Please enter your username or URL");
       return;
     }
+
+    setIsAddingToCart(true);
 
     addItem({
       id: `${Date.now()}-${selectedPackage.id}`,
@@ -177,11 +180,21 @@ export function PackageSelector({
         {/* Add to Cart Button */}
         <Button
           onClick={handleAddToCart}
+          disabled={isAddingToCart}
           size="lg"
           className="w-full gap-2 text-base"
         >
-          <ShoppingCart className="h-5 w-5" />
-          Add to Cart - ${selectedPackage.price.toFixed(2)}
+          {isAddingToCart ? (
+            <>
+              <Loader2 className="h-5 w-5 animate-spin" />
+              Adding to Cart...
+            </>
+          ) : (
+            <>
+              <ShoppingCart className="h-5 w-5" />
+              Add to Cart - ${selectedPackage.price.toFixed(2)}
+            </>
+          )}
         </Button>
       </div>
 

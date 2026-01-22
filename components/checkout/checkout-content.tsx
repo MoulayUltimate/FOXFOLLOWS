@@ -17,6 +17,7 @@ import {
   Shield,
   ArrowLeft,
   CheckCircle,
+  Loader2,
 } from "lucide-react";
 import { StripeProvider } from "./stripe-provider";
 import { getPlatformIcon } from "@/components/platform-icons";
@@ -26,6 +27,7 @@ export function CheckoutContent() {
   const [email, setEmail] = useState("");
   const [confirmedEmail, setConfirmedEmail] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [orderComplete, setOrderComplete] = useState(false);
   const [createdOrderIds, setCreatedOrderIds] = useState<string[]>([]);
 
@@ -42,6 +44,7 @@ export function CheckoutContent() {
 
   const handleContinueToPayment = () => {
     if (isValidEmail(email)) {
+      setIsLoading(true);
       setConfirmedEmail(email);
     }
   };
@@ -295,10 +298,17 @@ export function CheckoutContent() {
                   </p>
                   <Button
                     onClick={handleContinueToPayment}
-                    disabled={!isValidEmail(email)}
+                    disabled={!isValidEmail(email) || isLoading}
                     className="w-full"
                   >
-                    Continue to Payment
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      "Continue to Payment"
+                    )}
                   </Button>
                 </div>
               )}
