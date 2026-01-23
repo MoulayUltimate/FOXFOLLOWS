@@ -51,7 +51,6 @@ export async function POST(request: NextRequest) {
                 item.quantity,
                 item.price,
                 item.username,
-                item.username,
                 email || null,
                 initialStatus,
                 'pending',
