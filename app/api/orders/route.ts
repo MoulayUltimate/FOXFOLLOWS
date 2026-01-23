@@ -13,9 +13,14 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'No items in order' }, { status: 400 });
         }
 
-        if (!email) {
-            return NextResponse.json({ error: 'Email is required' }, { status: 400 });
+        if (!items || !Array.isArray(items) || items.length === 0) {
+            return NextResponse.json({ error: 'No items in order' }, { status: 400 });
         }
+
+        // Email is now optional for quick checkout flows via payment links
+        // if (!email) {
+        //     return NextResponse.json({ error: 'Email is required' }, { status: 400 });
+        // }
 
         const env = getRequestContext().env as any;
         if (!env?.DB) {
@@ -46,7 +51,8 @@ export async function POST(request: NextRequest) {
                 item.quantity,
                 item.price,
                 item.username,
-                email,
+                item.username,
+                email || null,
                 initialStatus,
                 'pending',
                 country

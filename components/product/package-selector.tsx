@@ -65,7 +65,7 @@ export function PackageSelector({
 
   const isInstagramFollowers = platform.id === "instagram" && selectedService.id === "followers";
 
-  const handleAction = () => {
+  const handleAction = async () => {
     if (!username.trim()) {
       toast.error("Please enter your username or URL");
       return;
@@ -74,6 +74,27 @@ export function PackageSelector({
     setIsProcessing(true);
 
     if (isInstagramFollowers) {
+      // Create pending order before redirect
+      try {
+        await fetch('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            items: [{
+              platform: platform.name,
+              service: selectedService.name,
+              quantity: selectedPackage.quantity,
+              price: selectedPackage.price,
+              username: username.trim()
+            }],
+            status: 'pending'
+          })
+        });
+      } catch (error) {
+        console.error('Failed to create pending order:', error);
+        // We continue to redirect even if tracking fails to not lose the sale
+      }
+
       // Instagram Payment Links
       switch (selectedPackage.quantity) {
         case 500:
