@@ -9,7 +9,7 @@ import { useCart } from "@/components/cart-provider";
 import { toast } from "sonner";
 import type { Platform, Service, Package } from "@/lib/products";
 import { formatQuantity } from "@/lib/products";
-import { Check, ShoppingCart, Zap, Shield, Clock, Star, Loader2 } from "lucide-react";
+import { Check, ShoppingCart, Zap, Shield, Clock, Star, Loader2, CreditCard } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface PackageSelectorProps {
@@ -35,7 +35,7 @@ export function PackageSelector({
     selectedService.packages.find((p) => p.popular) || selectedService.packages[2]
   );
   const [username, setUsername] = useState(initialUsername || "");
-  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     const serviceParam = searchParams.get("service");
@@ -63,29 +63,63 @@ export function PackageSelector({
     );
   };
 
-  const handleAddToCart = () => {
+  const isInstagramFollowers = platform.id === "instagram" && selectedService.id === "followers";
+
+  const handleAction = () => {
     if (!username.trim()) {
       toast.error("Please enter your username or URL");
       return;
     }
 
-    setIsAddingToCart(true);
+    setIsProcessing(true);
 
-    addItem({
-      id: `${Date.now()}-${selectedPackage.id}`,
-      platform: platform.name,
-      service: selectedService.name,
-      quantity: selectedPackage.quantity,
-      price: selectedPackage.price,
-      username: username.trim(),
-      link: username.trim(),
-      platformId: platform.id,
-      serviceId: selectedService.id,
-      packageId: selectedPackage.id,
-    });
+    if (isInstagramFollowers) {
+      // Instagram Payment Links
+      switch (selectedPackage.quantity) {
+        case 500:
+          window.location.href = "https://buy.stripe.com/8x24gBdvXaiK9BL9jV9AA00";
+          return;
+        case 1000:
+          window.location.href = "https://buy.stripe.com/bJe4gB2RjduW29jgMn9AA01";
+          return;
+        case 2500:
+          window.location.href = "https://buy.stripe.com/4gM00l77z62ucNX3ZB9AA02";
+          return;
+        case 5000:
+          window.location.href = "https://buy.stripe.com/bJefZj2RjfD4bJT3ZB9AA03";
+          return;
+        case 10000:
+          window.location.href = "https://buy.stripe.com/00w28t3VncqSbJT9jV9AA04";
+          return;
+        case 20000:
+          window.location.href = "https://buy.stripe.com/14A28tdvXcqScNXcw79AA05";
+          return;
+        case 50000:
+          window.location.href = "https://buy.stripe.com/5kQ6oJ4ZrfD44hr67J9AA06";
+          return;
+        default:
+          setIsProcessing(false);
+          toast.error("Payment link not configured for this specific package yet.");
+          return;
+      }
+    } else {
+      // Standard Add to Cart Logic
+      addItem({
+        id: `${Date.now()}-${selectedPackage.id}`,
+        platform: platform.name,
+        service: selectedService.name,
+        quantity: selectedPackage.quantity,
+        price: selectedPackage.price,
+        username: username.trim(),
+        link: username.trim(),
+        platformId: platform.id,
+        serviceId: selectedService.id,
+        packageId: selectedPackage.id,
+      });
 
-    toast.success(`Added ${formatQuantity(selectedPackage.quantity)} ${selectedService.name} to cart`);
-    router.push("/checkout");
+      toast.success(`Added ${formatQuantity(selectedPackage.quantity)} ${selectedService.name} to cart`);
+      router.push("/checkout");
+    }
   };
 
   return (
@@ -177,22 +211,31 @@ export function PackageSelector({
           </p>
         </div>
 
-        {/* Add to Cart Button */}
+        {/* Action Button */}
         <Button
-          onClick={handleAddToCart}
-          disabled={isAddingToCart}
+          onClick={handleAction}
+          disabled={isProcessing}
           size="lg"
           className="w-full gap-2 text-base"
         >
-          {isAddingToCart ? (
+          {isProcessing ? (
             <>
               <Loader2 className="h-5 w-5 animate-spin" />
-              Adding to Cart...
+              {isInstagramFollowers ? "Redirecting..." : "Adding to Cart..."}
             </>
           ) : (
             <>
-              <ShoppingCart className="h-5 w-5" />
-              Add to Cart - ${selectedPackage.price.toFixed(2)}
+              {isInstagramFollowers ? (
+                <>
+                  <CreditCard className="h-5 w-5" />
+                  Continue to Payment - ${selectedPackage.price.toFixed(2)}
+                </>
+              ) : (
+                <>
+                  <ShoppingCart className="h-5 w-5" />
+                  Add to Cart - ${selectedPackage.price.toFixed(2)}
+                </>
+              )}
             </>
           )}
         </Button>
